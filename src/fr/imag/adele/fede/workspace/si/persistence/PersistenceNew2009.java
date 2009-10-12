@@ -93,8 +93,7 @@ public class PersistenceNew2009 {
 	/** The Constant WS_PRIVATE_VERSION. */
 	//public static final String		WS_PRIVATE_VERSION	= "##WS:private:version";
 
-	/** The Constant MELUSINE_DIRECTORY. */
-	public static final String		MELUSINE_DIRECTORY	= ".melusine";
+	
 
 	// static final String FILE_NAME = "workspace-metadata.ser";
 	/** The Constant ID_FILE_NAME. */
@@ -139,7 +138,7 @@ public class PersistenceNew2009 {
 			pOld.enablePersistance = false;
 
 			File wsLocation = new File(location);
-			File location_melusine = new File(wsLocation, MELUSINE_DIRECTORY);
+			File location_melusine = new File(wsLocation, Persistence.MELUSINE_DIRECTORY);
 
 			// load the workspace information : cadse name;
 			pOld.loadID2(location);
@@ -534,10 +533,11 @@ public class PersistenceNew2009 {
 		readString(input); // remove info attribute
 
 		ItemDelta desc = copy.loadItem(id, type);
+		desc.setLoaded(true);
 		desc.setValid(isValid, true);
 		desc.setReadOnly(readOnly, true);
-		desc.setUniqueName(longname, true);
-		desc.setShortName(shortname, true);
+		desc.setQualifiedName(longname, true);
+		desc.setName(shortname, true);
 
 		// attributs
 		while (true) {
@@ -602,8 +602,8 @@ public class PersistenceNew2009 {
 			int version = input.readInt();
 
 			ItemDelta destItem = copy.loadItem(destId, destTypeName);
-			destItem.setUniqueName(destLongName, true);
-			destItem.setShortName(destShortName, true);
+			destItem.setQualifiedName(destLongName, true);
+			destItem.setName(destShortName, true);
 
 			LinkDelta ldesc = desc.loadLink(linkType, destItem);
 			ldesc.setInfo(link_info, true);
@@ -630,8 +630,8 @@ public class PersistenceNew2009 {
 			int version = input.readInt();
 
 			ItemDelta dest = copy.loadItem(destId, destTypeName);
-			dest.setShortName(destShortName, true);
-			dest.setUniqueName(destUniqueName, true);
+			dest.setName(destShortName, true);
+			dest.setQualifiedName(destUniqueName, true);
 
 			desc.loadDerivedLink(linkType, dest, isAggregation, isRequire, link_info, originLinkTypeID,
 					originLinkSourceTypeID, originLinkDestinationTypeID, version);
@@ -646,8 +646,8 @@ public class PersistenceNew2009 {
 			CompactUUID compTypeName = readUUID(input);
 
 			ItemDelta componentItem = copy.loadItem(compId, compTypeName);
-			componentItem.setShortName(compShortName, true);
-			componentItem.setUniqueName(compUniqueName, true);
+			componentItem.setName(compShortName, true);
+			componentItem.setQualifiedName(compUniqueName, true);
 
 			// desc.addComponant(componentItem);
 		}

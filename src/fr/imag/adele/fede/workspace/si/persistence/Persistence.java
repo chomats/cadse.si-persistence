@@ -60,6 +60,7 @@ import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseRuntime;
 import fr.imag.adele.cadse.core.CompactUUID;
+import fr.imag.adele.cadse.core.ContentItem;
 import fr.imag.adele.cadse.core.DerivedLink;
 import fr.imag.adele.cadse.core.DerivedLinkDescription;
 import fr.imag.adele.cadse.core.Item;
@@ -117,7 +118,7 @@ public class Persistence implements IPersistence {
 	/** The Constant WS_PRIVATE_VERSION. */
 	// public static final String WS_PRIVATE_VERSION = "##WS:private:version";
 	/** The Constant MELUSINE_DIRECTORY. */
-	public static final String		MELUSINE_DIRECTORY	= ".melusine";
+	public static final String		MELUSINE_DIRECTORY	= ".cadse";
 
 	// static final String FILE_NAME = "workspace-metadata.ser";
 	/** The Constant ID_FILE_NAME. */
@@ -685,6 +686,7 @@ public class Persistence implements IPersistence {
 	 *             the throwable
 	 */
 	public void save(final Item item) throws Throwable {
+		
 		saveModelNameIfNeed();
 		// pas avant le saveID sinon on ne sauve pas l'id du
 		// currentworkspace...
@@ -706,6 +708,11 @@ public class Persistence implements IPersistence {
 	 *             the no such algorithm exception
 	 */
 	void saveInternal(final Item item) throws IOException, FileNotFoundException, NoSuchAlgorithmException {
+		if (item.isStatic()) {
+			mLogger.log(Level.WARNING, "Cannot save item {0} : it is static", item.getId());
+			return;
+		}
+		
 		// write in byte array
 		byte[] data = itemToByteArray(item);
 
@@ -1894,7 +1901,7 @@ public class Persistence implements IPersistence {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static void write(byte[] data, File itemFile, boolean deleteFileIfError) throws FileNotFoundException,
+	private static void write(byte[] data, File itemFile, boolean deleteFileIfError) throws FileNotFoundException,
 			IOException {
 		mkdirs(itemFile.getParentFile());
 		FileOutputStream output = null;
@@ -2397,22 +2404,6 @@ public class Persistence implements IPersistence {
 		}
 	}
 
-	// public static void writeModelType_ItemType(File itemTypeFile, ItemType
-	// it) throws Throwable {
-	// itemTypeFile.getParentFile().mkdirs();
-	// ObjectOutputStream output = null;
-	// try {
-	// output = new ObjectOutputStream(new FileOutputStream(itemTypeFile));
-	// output.writeUTF(it.getModelType().getModelName());
-	// output.writeUTF(it.getId());
-	// output.flush();
-	// output.close();
-	// } finally {
-	// if (output != null)
-	// output.close();
-	// }
-	// }
-
 	/**
 	 * Read ser.
 	 *
@@ -2732,12 +2723,15 @@ public class Persistence implements IPersistence {
 				if (i.isStatic()) {
 					continue;
 				}
+				if (i instanceof ContentItem)
+					continue;
 				try {
-					if (i.isReadOnly()) {
-						Persistence.mLogger.warning(MessageFormat.format("Cannot perform save {0} : it's readonly.", i
-								.getId()));
-						continue;
-					}
+//					TODO an item readonly must be saved !!!					
+//					if (i.isReadOnly()) {
+//						Persistence.mLogger.warning(MessageFormat.format("Cannot perform save {0} : it\\'s readonly.", i
+//								.getId()));
+//						continue;
+//					}
 					saveInternal(i);
 
 				} catch (Throwable e) {
