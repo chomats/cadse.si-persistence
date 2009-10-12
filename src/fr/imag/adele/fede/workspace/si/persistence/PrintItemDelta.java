@@ -1616,7 +1616,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public boolean exist() {
+	public boolean exists() {
 		// TODO Auto-generated method stub
 		return false;
 	}
