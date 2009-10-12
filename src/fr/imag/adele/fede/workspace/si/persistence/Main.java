@@ -731,6 +731,12 @@ public class Main {
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public ContextVariable getContext() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
 	public static void main(String[] args) {
