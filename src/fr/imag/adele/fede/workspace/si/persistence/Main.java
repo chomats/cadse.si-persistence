@@ -737,6 +737,12 @@ public class Main {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public void validateDeleteLink(LinkDelta link) throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 
 	public static void main(String[] args) {
