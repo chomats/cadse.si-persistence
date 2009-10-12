@@ -2,6 +2,7 @@ package fr.imag.adele.fede.workspace.si.persistence;
 
 import java.util.Collection;
 
+import fr.imag.adele.cadse.core.CadseError;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CompactUUID;
 import fr.imag.adele.cadse.core.Item;
@@ -443,11 +444,7 @@ public class PrintLinkDelta implements LinkDelta {
 		return false;
 	}
 
-	@Override
-	public void addError(String msg) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	@Override
 	public CompactUUID getOperationId() {
@@ -531,6 +528,18 @@ public class PrintLinkDelta implements LinkDelta {
 	public void setDeleteOperation(DeleteOperation deleteItemOperation) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void addError(String msg, Object... args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addError(CadseError e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

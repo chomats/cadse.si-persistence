@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.imag.adele.cadse.core.CadseDomain;
+import fr.imag.adele.cadse.core.CadseError;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CompactUUID;
 import fr.imag.adele.cadse.core.ContentChangeInfo;
@@ -1482,11 +1483,6 @@ links.add(l);// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public void addError(String msg) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public CompactUUID getOperationId() {
@@ -1619,6 +1615,30 @@ links.add(l);// TODO Auto-generated method stub
 	public boolean exists() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public ISpaceKey getNextKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setNextKey(ISpaceKey newK) throws CadseException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addError(String msg, Object... args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addError(CadseError e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
