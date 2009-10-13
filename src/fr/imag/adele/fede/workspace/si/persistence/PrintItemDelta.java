@@ -138,19 +138,6 @@ public class PrintItemDelta implements ItemDelta {
 		return null;
 	}
 
-	@Override
-	public Collection<Item> getIncomingItems(boolean acceptDelete,
-			boolean acceptAdd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<Item> getIncomingItems(LinkType lt, boolean acceptDelete,
-			boolean acceptAdd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public List<LinkDelta> getIncomingLinkOperations() {
@@ -225,21 +212,21 @@ public class PrintItemDelta implements ItemDelta {
 	}
 
 	@Override
-	public Collection<Item> getOutgoingItems(boolean acceptDeletedLink,
+	public Collection<ItemDelta> getOutgoingItems(boolean acceptDeletedLink,
 			boolean resovledOnly) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Collection<Item> getOutgoingItems(boolean acceptDeletedLink,
+	public Collection<ItemDelta> getOutgoingItems(boolean acceptDeletedLink,
 			LinkType lt, boolean resovledOnly) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Collection<Item> getOutgoingItems(boolean acceptDeletedLink,
+	public Collection<ItemDelta> getOutgoingItems(boolean acceptDeletedLink,
 			String linkType, boolean resovledOnly) {
 		// TODO Auto-generated method stub
 		return null;
@@ -301,7 +288,7 @@ public class PrintItemDelta implements ItemDelta {
 	}
 
 	@Override
-	public List<Link> getOutgoingLinks(boolean acceptDeleted) {
+	public List<LinkDelta> getOutgoingLinks(boolean acceptDeleted) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1639,6 +1626,20 @@ links.add(l);// TODO Auto-generated method stub
 	public void addError(CadseError e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Collection<ItemDelta> getIncomingItems(boolean acceptDelete,
+			boolean acceptAdd) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<ItemDelta> getIncomingItems(LinkType lt,
+			boolean acceptDelete, boolean acceptAdd) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
