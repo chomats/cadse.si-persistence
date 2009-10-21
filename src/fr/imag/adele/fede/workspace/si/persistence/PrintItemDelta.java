@@ -1642,4 +1642,34 @@ links.add(l);// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public Item getGroup() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Item> getMembers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isGroup() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isMember() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isMemberOf(Item item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
