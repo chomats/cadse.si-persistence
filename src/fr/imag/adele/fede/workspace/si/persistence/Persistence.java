@@ -2308,7 +2308,10 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static CompactUUID readUUID(ObjectInput input) throws IOException {
-		return new CompactUUID(input.readLong(), input.readLong());
+		long firstLong = input.readLong();
+		if (firstLong == -1)
+			return null;
+		return new CompactUUID(firstLong, firstLong);
 	}
 
 	/**
@@ -2323,6 +2326,8 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void writeUUID(ObjectOutput output, CompactUUID uuid) throws IOException {
+		if (uuid == null)
+			output.writeLong(-1);
 		output.writeLong(uuid.getMostSignificantBits());
 		output.writeLong(uuid.getLeastSignificantBits());
 	}
