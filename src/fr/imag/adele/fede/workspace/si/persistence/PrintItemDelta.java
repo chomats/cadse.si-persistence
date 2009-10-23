@@ -1662,4 +1662,10 @@ links.add(l);// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public List<LinkType> getInstanceOutgoingLinkTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

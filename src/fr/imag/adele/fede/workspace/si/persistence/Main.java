@@ -38,6 +38,8 @@ import fr.imag.adele.cadse.core.internal.IWorkspaceNotifier;
 import fr.imag.adele.cadse.core.key.ISpaceKey;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransactionListener;
+import fr.imag.adele.cadse.core.ui.view.FilterContext;
+import fr.imag.adele.cadse.core.ui.view.NewContext;
 import fr.imag.adele.cadse.core.util.ElementsOrder;
 import fr.imag.adele.cadse.core.var.ContextVariable;
 
@@ -742,6 +744,12 @@ public class Main {
 		public void validateDeleteLink(LinkDelta link) throws CadseException {
 			// TODO Auto-generated method stub
 			
+		}
+
+		@Override
+		public NewContext[] getNewContextFrom(FilterContext context) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 
