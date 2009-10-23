@@ -592,9 +592,9 @@ public class PersistenceNew2009 {
 				break;
 			}
 			CompactUUID destId = readUUID(input);
-			String destLongName = readString(input);
+			String destQualifiedName = readString(input);
 
-			String destShortName = readString(input);
+			String destName = readString(input);
 
 			CompactUUID destTypeName = readUUID(input);
 			String link_info = readString(input);
@@ -602,9 +602,11 @@ public class PersistenceNew2009 {
 			int version = input.readInt();
 
 			ItemDelta destItem = copy.loadItem(destId, destTypeName);
-			destItem.setQualifiedName(destLongName, true);
-			destItem.setName(destShortName, true);
-
+			if (!destItem.isStatic()) {
+				destItem.setQualifiedName(destQualifiedName, true);
+				destItem.setName(destName, true);
+			}
+			
 			LinkDelta ldesc = desc.loadLink(linkType, destItem);
 			ldesc.setInfo(link_info, true);
 			ldesc.setVersion(version, true);
