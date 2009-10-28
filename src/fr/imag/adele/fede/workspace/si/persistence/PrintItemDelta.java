@@ -1317,8 +1317,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public boolean commitSetAttribute(IAttributeType<?> type, String key,
-			Object value) {
+	public boolean commitSetAttribute(IAttributeType<?> type, Object value) {
 		// TODO Auto-generated method stub
 		return false;
 	}

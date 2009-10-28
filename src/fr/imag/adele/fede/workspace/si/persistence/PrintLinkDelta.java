@@ -50,8 +50,7 @@ public class PrintLinkDelta implements LinkDelta {
 	}
 
 	@Override
-	public boolean commitSetAttribute(IAttributeType<?> type, String key,
-			Object value) {
+	public boolean commitSetAttribute(IAttributeType<?> type, Object value) {
 		// TODO Auto-generated method stub
 		return false;
 	}
