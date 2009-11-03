@@ -751,6 +751,12 @@ public class Main {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public ItemDelta createItem(NewContext c) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
 	public static void main(String[] args) {

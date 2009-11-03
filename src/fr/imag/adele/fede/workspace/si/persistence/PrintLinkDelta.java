@@ -49,11 +49,6 @@ public class PrintLinkDelta implements LinkDelta {
 
 	}
 
-	@Override
-	public boolean commitSetAttribute(IAttributeType<?> type, Object value) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public void delete(DeleteOperation options) throws CadseException {
@@ -539,6 +534,13 @@ public class PrintLinkDelta implements LinkDelta {
 	public void addError(CadseError e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean commitSetAttribute(IAttributeType<?> type, String key,
+			Object value) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
