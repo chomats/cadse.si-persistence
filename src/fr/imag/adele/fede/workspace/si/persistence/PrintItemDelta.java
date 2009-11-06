@@ -51,6 +51,7 @@ import fr.imag.adele.cadse.core.internal.IWorkingLoadingItems;
 import fr.imag.adele.cadse.core.internal.IWorkspaceNotifier;
 import fr.imag.adele.cadse.core.key.ISpaceKey;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
+import fr.imag.adele.cadse.core.ui.Pages;
 import fr.imag.adele.cadse.core.util.IErrorCollector;
 import fr.imag.adele.cadse.core.util.OrderWay;
 
@@ -1663,6 +1664,12 @@ links.add(l);// TODO Auto-generated method stub
 
 	@Override
 	public List<LinkType> getInstanceOutgoingLinkTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Pages getInstanceModificationPages(Item selectedItem) {
 		// TODO Auto-generated method stub
 		return null;
 	}
