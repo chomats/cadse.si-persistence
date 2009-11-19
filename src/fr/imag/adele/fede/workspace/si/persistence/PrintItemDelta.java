@@ -52,6 +52,8 @@ import fr.imag.adele.cadse.core.internal.IWorkspaceNotifier;
 import fr.imag.adele.cadse.core.key.ISpaceKey;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.ui.Pages;
+import fr.imag.adele.cadse.core.ui.view.FilterContext;
+import fr.imag.adele.cadse.core.ui.view.NewContext;
 import fr.imag.adele.cadse.core.util.IErrorCollector;
 import fr.imag.adele.cadse.core.util.OrderWay;
 
@@ -1669,7 +1671,13 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public Pages getInstanceModificationPages(Item selectedItem) {
+	public Pages getCreationPages(NewContext context) throws CadseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Pages getModificationPages(FilterContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}
