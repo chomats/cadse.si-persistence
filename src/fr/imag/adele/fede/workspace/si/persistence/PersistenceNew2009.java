@@ -36,7 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import fr.imag.adele.cadse.core.CadseException;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemType;
@@ -146,7 +146,7 @@ public class PersistenceNew2009 {
 			try {
 				LogicalWorkspace workspaceLogique = workspaceCU.getLogicalWorkspace();
 				IMigrationFormat mig = new MigrationFormat(workspaceLogique, mLogger);
-				Map<CompactUUID, ItemDelta> items = new HashMap<CompactUUID, ItemDelta>();
+				Map<UUID, ItemDelta> items = new HashMap<UUID, ItemDelta>();
 
 				LogicalWorkspaceTransaction copy = workspaceLogique.createTransaction();
 				loadItemDescriptionFromRepo(copy, mig, location_melusine, null, items);
@@ -190,7 +190,7 @@ public class PersistenceNew2009 {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private void loadItemDescriptionFromRepo(LogicalWorkspaceTransaction copy, IMigrationFormat mig,
-			File location_melusine, IProgressMonitor monitor, Map<CompactUUID, ItemDelta> items) throws IOException {
+			File location_melusine, IProgressMonitor monitor, Map<UUID, ItemDelta> items) throws IOException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
@@ -379,7 +379,7 @@ public class PersistenceNew2009 {
 		String type = (String) input.readObject();
 		String longname = (String) input.readObject();
 		String shortname = (String) input.readObject();
-		CompactUUID it = mig.getITID(type);
+		UUID it = mig.getITID(type);
 		if (it == null) {
 			return null;
 		}
@@ -390,7 +390,7 @@ public class PersistenceNew2009 {
 		boolean isValid = input.readBoolean();
 		input.readObject(); // remove info attribute
 
-		ItemDelta desc = copy.loadItem(new CompactUUID(id), it);
+		ItemDelta desc = copy.loadItem(new UUID(id), it);
 		desc.setValid(isValid, true);
 		desc.setReadOnly(readOnly, true);
 		desc.setQualifiedName(longname, true);
@@ -429,9 +429,9 @@ public class PersistenceNew2009 {
 			String destShortName = (String) input.readObject();
 			String destTypeName = (String) input.readObject();
 			String link_info = (String) input.readObject();
-			CompactUUID destTypeID = mig.getOrCreateITID(destTypeName);
+			UUID destTypeID = mig.getOrCreateITID(destTypeName);
 
-			ItemDelta destItem = copy.loadItem(new CompactUUID(destId), destTypeID);
+			ItemDelta destItem = copy.loadItem(new UUID(destId), destTypeID);
 			destItem.setUniqueName(destLongName, true);
 			destItem.setShortName(destShortName, true);
 
@@ -449,7 +449,7 @@ public class PersistenceNew2009 {
 			String destUniqueName = (String) input.readObject();
 			String destShortName = (String) input.readObject();
 			String destTypeName = (String) input.readObject();
-			CompactUUID destTypeID = mig.getOrCreateITID(destTypeName);
+			UUID destTypeID = mig.getOrCreateITID(destTypeName);
 			String link_info = (String) input.readObject();
 
 			boolean isAggregation = input.readBoolean();
@@ -457,8 +457,8 @@ public class PersistenceNew2009 {
 			String originLinkTypeID = (String) input.readObject();
 			String originLinkSourceTypeID = (String) input.readObject();
 			String originLinkDestinationTypeID = (String) input.readObject();
-			CompactUUID uuidOriginLinkDestinationTypeID = mig.getOrCreateITID(originLinkDestinationTypeID);
-			CompactUUID uuidOriginLinkSourceTypeID = mig.getOrCreateITID(originLinkSourceTypeID);
+			UUID uuidOriginLinkDestinationTypeID = mig.getOrCreateITID(originLinkDestinationTypeID);
+			UUID uuidOriginLinkSourceTypeID = mig.getOrCreateITID(originLinkSourceTypeID);
 			String other = (String) input.readObject();
 			int version = 0;
 			try {
@@ -467,7 +467,7 @@ public class PersistenceNew2009 {
 				version = 0;
 			}
 
-			ItemDelta dest = copy.loadItem(new CompactUUID(destId), destTypeID);
+			ItemDelta dest = copy.loadItem(new UUID(destId), destTypeID);
 			dest.setShortName(destShortName, true);
 			dest.setUniqueName(destUniqueName, true);
 
@@ -483,9 +483,9 @@ public class PersistenceNew2009 {
 			String compUniqueName = (String) input.readObject();
 			String compShortName = (String) input.readObject();
 			String compTypeName = (String) input.readObject();
-			CompactUUID uuidCompTypeName = mig.getOrCreateITID(compTypeName);
+			UUID uuidCompTypeName = mig.getOrCreateITID(compTypeName);
 
-			ItemDelta componentItem = copy.loadItem(new CompactUUID(compId), uuidCompTypeName);
+			ItemDelta componentItem = copy.loadItem(new UUID(compId), uuidCompTypeName);
 			componentItem.setShortName(compShortName, true);
 			componentItem.setUniqueName(compUniqueName, true);
 
@@ -520,8 +520,8 @@ public class PersistenceNew2009 {
 
 		// /*int version = */ input.readInt(); /* == 6 */
 
-		CompactUUID id = readUUID(input);
-		CompactUUID type = readUUID(input);
+		UUID id = readUUID(input);
+		UUID type = readUUID(input);
 		ItemType it = copy.getItemType(type);
 		String longname = readString(input);
 		String shortname = readString(input);
@@ -551,9 +551,9 @@ public class PersistenceNew2009 {
 			}
 			try {
 				Object value = input.readObject();
-				if (value instanceof fede.workspace.domain.CompactUUID) {
-					value = new CompactUUID(((fede.workspace.domain.CompactUUID)value).getMostSignificantBits(),
-							((fede.workspace.domain.CompactUUID)value).getLeastSignificantBits());
+				if (value instanceof fede.workspace.domain.UUID) {
+					value = new UUID(((fede.workspace.domain.UUID)value).getMostSignificantBits(),
+							((fede.workspace.domain.UUID)value).getLeastSignificantBits());
 				}
 				else if (value instanceof fede.workspace.domain.root.type.TWCommitKind) {
 					value = TWCommitKind.valueOf(value.toString());
@@ -591,12 +591,12 @@ public class PersistenceNew2009 {
 			if (linkType == null) {
 				break;
 			}
-			CompactUUID destId = readUUID(input);
+			UUID destId = readUUID(input);
 			String destQualifiedName = readString(input);
 
 			String destName = readString(input);
 
-			CompactUUID destTypeName = readUUID(input);
+			UUID destTypeName = readUUID(input);
 			String link_info = readString(input);
 
 			int version = input.readInt();
@@ -618,17 +618,17 @@ public class PersistenceNew2009 {
 			if (linkType == null) {
 				break;
 			}
-			CompactUUID destId = readUUID(input);
+			UUID destId = readUUID(input);
 			String destUniqueName = readString(input);
 			String destShortName = readString(input);
-			CompactUUID destTypeName = readUUID(input);
+			UUID destTypeName = readUUID(input);
 			String link_info = readString(input);
 
 			boolean isAggregation = input.readBoolean();
 			boolean isRequire = input.readBoolean();
 			String originLinkTypeID = readString(input);
-			CompactUUID originLinkSourceTypeID = readUUID(input);
-			CompactUUID originLinkDestinationTypeID = readUUID(input);
+			UUID originLinkSourceTypeID = readUUID(input);
+			UUID originLinkDestinationTypeID = readUUID(input);
 			int version = input.readInt();
 
 			ItemDelta dest = copy.loadItem(destId, destTypeName);
@@ -640,12 +640,12 @@ public class PersistenceNew2009 {
 		}
 		int size = input.read();
 		for (int i = 0; i < size; i++) {
-			CompactUUID compId = readUUID(input);
+			UUID compId = readUUID(input);
 			String compUniqueName = readString(input);
 			;
 			String compShortName = readString(input);
 			;
-			CompactUUID compTypeName = readUUID(input);
+			UUID compTypeName = readUUID(input);
 
 			ItemDelta componentItem = copy.loadItem(compId, compTypeName);
 			componentItem.setName(compShortName, true);
@@ -672,8 +672,8 @@ public class PersistenceNew2009 {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private static CompactUUID readUUID(ObjectInput input) throws IOException {
-		return new CompactUUID(input.readLong(), input.readLong());
+	private static UUID readUUID(ObjectInput input) throws IOException {
+		return new UUID(input.readLong(), input.readLong());
 	}
 
 	/**

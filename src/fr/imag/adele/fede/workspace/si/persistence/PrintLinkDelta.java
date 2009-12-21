@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import fr.imag.adele.cadse.core.CadseError;
 import fr.imag.adele.cadse.core.CadseException;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.Link;
@@ -100,7 +100,7 @@ public class PrintLinkDelta implements LinkDelta {
 	}
 
 	@Override
-	public CompactUUID getDestinationId() {
+	public UUID getDestinationId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -184,7 +184,7 @@ public class PrintLinkDelta implements LinkDelta {
 	}
 
 	@Override
-	public CompactUUID getSourceId() {
+	public UUID getSourceId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -441,7 +441,7 @@ public class PrintLinkDelta implements LinkDelta {
 	
 
 	@Override
-	public CompactUUID getOperationId() {
+	public UUID getOperationId() {
 		// TODO Auto-generated method stub
 		return null;
 	}

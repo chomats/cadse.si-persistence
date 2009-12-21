@@ -15,7 +15,7 @@ import java.util.Set;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseError;
 import fr.imag.adele.cadse.core.CadseException;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.ContentChangeInfo;
 import fr.imag.adele.cadse.core.ContentItem;
 import fr.imag.adele.cadse.core.DerivedLink;
@@ -62,11 +62,11 @@ public class PrintItemDelta implements ItemDelta {
 	private String _name;
 	private String _qname;
 	HashMap<String , Object> _atts = new HashMap<String, Object>();
-	private CompactUUID _id;
-	private CompactUUID _type;
+	private UUID _id;
+	private UUID _type;
 	private ArrayList<LinkDelta> links=  new ArrayList<LinkDelta>();
 	
-	public PrintItemDelta(CompactUUID id, CompactUUID type) {
+	public PrintItemDelta(UUID id, UUID type) {
 		_id = id;
 		_type = type;
 	}
@@ -163,7 +163,7 @@ public class PrintItemDelta implements ItemDelta {
 	}
 
 	@Override
-	public CompactUUID getItemTypeId() {
+	public UUID getItemTypeId() {
 		return _type;
 	}
 
@@ -249,13 +249,13 @@ public class PrintItemDelta implements ItemDelta {
 	}
 
 	@Override
-	public LinkDelta getOutgoingLink(LinkType lt, CompactUUID destId) {
+	public LinkDelta getOutgoingLink(LinkType lt, UUID destId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public LinkDelta getOutgoingLink(String lt, CompactUUID destId) {
+	public LinkDelta getOutgoingLink(String lt, UUID destId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -280,7 +280,7 @@ public class PrintItemDelta implements ItemDelta {
 	}
 
 	@Override
-	public List<LinkDelta> getOutgoingLinkOperations(CompactUUID destId) {
+	public List<LinkDelta> getOutgoingLinkOperations(UUID destId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -298,7 +298,7 @@ public class PrintItemDelta implements ItemDelta {
 	}
 
 	@Override
-	public List<LinkDelta> getOutgoingLinks(CompactUUID destId) {
+	public List<LinkDelta> getOutgoingLinks(UUID destId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -437,8 +437,8 @@ public class PrintItemDelta implements ItemDelta {
 	@Override
 	public void loadDerivedLink(String linkType, ItemDelta dest,
 			boolean isAggregation, boolean isRequire, String linkInfo,
-			String originLinkTypeID, CompactUUID uuidOriginLinkSourceTypeID,
-			CompactUUID uuidOriginLinkDestinationTypeID, int version) {
+			String originLinkTypeID, UUID uuidOriginLinkSourceTypeID,
+			UUID uuidOriginLinkDestinationTypeID, int version) {
 		// TODO Auto-generated method stub
 
 	}
@@ -640,7 +640,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public boolean canCreateLink(LinkType linkType, CompactUUID destItemId) {
+	public boolean canCreateLink(LinkType linkType, UUID destItemId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -658,7 +658,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public boolean containsComponent(CompactUUID itemId) {
+	public boolean containsComponent(UUID itemId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -713,13 +713,13 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public Set<CompactUUID> getComponentIds() {
+	public Set<UUID> getComponentIds() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Item getComponentInfo(CompactUUID itemId) {
+	public Item getComponentInfo(UUID itemId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -761,7 +761,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public CompactUUID getId() {
+	public UUID getId() {
 		return _id;
 	}
 
@@ -784,7 +784,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public Link getIncomingLink(LinkType linkType, CompactUUID srcId) {
+	public Link getIncomingLink(LinkType linkType, UUID srcId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -849,7 +849,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public Item getOutgoingItem(String linkTypeName, CompactUUID itemId,
+	public Item getOutgoingItem(String linkTypeName, UUID itemId,
 			boolean resolvedOnly) {
 		// TODO Auto-generated method stub
 		return null;
@@ -887,7 +887,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public Item getPartChild(CompactUUID destItemId) {
+	public Item getPartChild(UUID destItemId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1475,7 +1475,7 @@ links.add(l);// TODO Auto-generated method stub
 
 
 	@Override
-	public CompactUUID getOperationId() {
+	public UUID getOperationId() {
 		// TODO Auto-generated method stub
 		return null;
 	}

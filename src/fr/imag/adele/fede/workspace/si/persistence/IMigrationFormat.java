@@ -21,7 +21,7 @@ package fr.imag.adele.fede.workspace.si.persistence;
 
 import java.util.Map;
 
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 
 /**
  * The Interface IMigrationFormat.
@@ -38,7 +38,7 @@ public interface IMigrationFormat {
 	 * 
 	 * @return the or create itid
 	 */
-	CompactUUID getOrCreateITID(String type);
+	UUID getOrCreateITID(String type);
 
 	/**
 	 * Gets the iTID.
@@ -48,13 +48,13 @@ public interface IMigrationFormat {
 	 * 
 	 * @return the iTID
 	 */
-	CompactUUID getITID(String type);
+	UUID getITID(String type);
 
 	/**
 	 * Gets the unresolved type.
 	 * 
 	 * @return the unresolved type
 	 */
-	Map<CompactUUID, String> getUnresolvedType();
+	Map<UUID, String> getUnresolvedType();
 
 }

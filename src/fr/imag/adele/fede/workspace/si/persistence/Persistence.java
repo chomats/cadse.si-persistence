@@ -59,7 +59,7 @@ import fede.workspace.tool.migration.MigrationModel;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseRuntime;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.ContentItem;
 import fr.imag.adele.cadse.core.DerivedLink;
 import fr.imag.adele.cadse.core.DerivedLinkDescription;
@@ -506,7 +506,7 @@ public class Persistence implements IPersistence {
 	 *
 	 * @return true, if successful
 	 */
-	private boolean migrate(LogicalWorkspace workspaceLogique, Map<CompactUUID, ItemDescription> items) {
+	private boolean migrate(LogicalWorkspace workspaceLogique, Map<UUID, ItemDescription> items) {
 		String migfile = System.getProperty("fr.imag.adele.cadseg.migfile");
 		if (migfile != null) {
 			long start = System.currentTimeMillis();
@@ -595,7 +595,7 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	void loadItemDescriptionFromRepo(IMigrationFormat mig, File location_melusine, IProgressMonitor monitor,
-			Map<CompactUUID, ItemDescription> items) throws IOException {
+			Map<UUID, ItemDescription> items) throws IOException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
@@ -1290,7 +1290,7 @@ public class Persistence implements IPersistence {
 	 *
 	 * @return the file
 	 */
-	File fileInWorkspaceV2(CompactUUID id2, boolean mustExists) {
+	File fileInWorkspaceV2(UUID id2, boolean mustExists) {
 		File location_melusine = new File(wsLocation, MELUSINE_DIRECTORY);
 		if (!location_melusine.exists()) {
 			location_melusine.mkdirs();
@@ -1314,7 +1314,7 @@ public class Persistence implements IPersistence {
 	 *
 	 * @return the file
 	 */
-	File fileInWorkspaceXMLV2(CompactUUID id2) {
+	File fileInWorkspaceXMLV2(UUID id2) {
 		File location_melusine = new File(wsLocation, MELUSINE_DIRECTORY);
 		if (!location_melusine.exists()) {
 			location_melusine.mkdirs();
@@ -1374,14 +1374,14 @@ public class Persistence implements IPersistence {
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
 	 */
-	public static CompactUUID readItemID_6(ObjectInput input) throws IOException, ClassNotFoundException {
+	public static UUID readItemID_6(ObjectInput input) throws IOException, ClassNotFoundException {
 		int version = input.readInt();
 		if (version == 6) {
 			return readUUID(input);
 		}
 
 		UUID id = (UUID) input.readObject();
-		return new CompactUUID(id);
+		return new UUID(id);
 	}
 
 	/*
@@ -1995,9 +1995,9 @@ public class Persistence implements IPersistence {
 		String type = (String) input.readObject();
 		String longname = (String) input.readObject();
 		String shortname = (String) input.readObject();
-		CompactUUID it = mig.getOrCreateITID(type);
+		UUID it = mig.getOrCreateITID(type);
 
-		ItemDescriptionRef ref = new ItemDescriptionRef(new CompactUUID(id), it, longname, shortname);
+		ItemDescriptionRef ref = new ItemDescriptionRef(new UUID(id), it, longname, shortname);
 		return ref;
 	}
 
@@ -2019,8 +2019,8 @@ public class Persistence implements IPersistence {
 
 		/* int version = */input.readInt(); /* == 6 */
 
-		CompactUUID id = (CompactUUID) input.readObject();
-		CompactUUID type = (CompactUUID) input.readObject();
+		UUID id = (UUID) input.readObject();
+		UUID type = (UUID) input.readObject();
 		String longname = (String) input.readObject();
 		String shortname = (String) input.readObject();
 
@@ -2055,7 +2055,7 @@ public class Persistence implements IPersistence {
 		String type = (String) input.readObject();
 		String longname = (String) input.readObject();
 		String shortname = (String) input.readObject();
-		CompactUUID it = mig.getITID(type);
+		UUID it = mig.getITID(type);
 		if (it == null) {
 			return null;
 		}
@@ -2066,7 +2066,7 @@ public class Persistence implements IPersistence {
 		boolean isValid = input.readBoolean();
 		String info = (String) input.readObject();
 
-		ItemDescription desc = new ItemDescription(new CompactUUID(id), it);
+		ItemDescription desc = new ItemDescription(new UUID(id), it);
 		desc.setValid(isValid);
 		desc.setReadOnly(readOnly);
 		desc.setUniqueName(longname);
@@ -2106,9 +2106,9 @@ public class Persistence implements IPersistence {
 			String destShortName = (String) input.readObject();
 			String destTypeName = (String) input.readObject();
 			String link_info = (String) input.readObject();
-			CompactUUID destTypeID = mig.getOrCreateITID(destTypeName);
+			UUID destTypeID = mig.getOrCreateITID(destTypeName);
 
-			LinkDescription ldesc = new LinkDescription(desc, linkType, new ItemDescriptionRef(new CompactUUID(destId),
+			LinkDescription ldesc = new LinkDescription(desc, linkType, new ItemDescriptionRef(new UUID(destId),
 					destTypeID));
 			ldesc.getDestination().setUniqueName(destLongName);
 			ldesc.getDestination().setShortname(destShortName);
@@ -2124,7 +2124,7 @@ public class Persistence implements IPersistence {
 			String destUniqueName = (String) input.readObject();
 			String destShortName = (String) input.readObject();
 			String destTypeName = (String) input.readObject();
-			CompactUUID destTypeID = mig.getOrCreateITID(destTypeName);
+			UUID destTypeID = mig.getOrCreateITID(destTypeName);
 			String link_info = (String) input.readObject();
 
 			boolean isAggregation = input.readBoolean();
@@ -2132,8 +2132,8 @@ public class Persistence implements IPersistence {
 			String originLinkTypeID = (String) input.readObject();
 			String originLinkSourceTypeID = (String) input.readObject();
 			String originLinkDestinationTypeID = (String) input.readObject();
-			CompactUUID uuidOriginLinkDestinationTypeID = mig.getOrCreateITID(originLinkDestinationTypeID);
-			CompactUUID uuidOriginLinkSourceTypeID = mig.getOrCreateITID(originLinkSourceTypeID);
+			UUID uuidOriginLinkDestinationTypeID = mig.getOrCreateITID(originLinkDestinationTypeID);
+			UUID uuidOriginLinkSourceTypeID = mig.getOrCreateITID(originLinkSourceTypeID);
 			String other = (String) input.readObject();
 			int version = 0;
 			try {
@@ -2141,7 +2141,7 @@ public class Persistence implements IPersistence {
 			} catch (NumberFormatException e) {
 				version = 0;
 			}
-			ItemDescriptionRef dest = new ItemDescriptionRef(new CompactUUID(destId), destTypeID, destUniqueName,
+			ItemDescriptionRef dest = new ItemDescriptionRef(new UUID(destId), destTypeID, destUniqueName,
 					destShortName);
 			DerivedLinkDescription derivedLinkDescription = new DerivedLinkDescription(desc, linkType, dest,
 					isAggregation, isRequire, link_info, originLinkTypeID, uuidOriginLinkSourceTypeID,
@@ -2157,9 +2157,9 @@ public class Persistence implements IPersistence {
 			String compUniqueName = (String) input.readObject();
 			String compShortName = (String) input.readObject();
 			String compTypeName = (String) input.readObject();
-			CompactUUID uuidCompTypeName = mig.getOrCreateITID(compTypeName);
+			UUID uuidCompTypeName = mig.getOrCreateITID(compTypeName);
 
-			desc.addComponantsLink(new ItemDescriptionRef(new CompactUUID(compId), uuidCompTypeName, compUniqueName,
+			desc.addComponantsLink(new ItemDescriptionRef(new UUID(compId), uuidCompTypeName, compUniqueName,
 					compShortName));
 		}
 
@@ -2188,8 +2188,8 @@ public class Persistence implements IPersistence {
 
 		// /*int version = */ input.readInt(); /* == 6 */
 
-		CompactUUID id = readUUID(input);
-		CompactUUID type = readUUID(input);
+		UUID id = readUUID(input);
+		UUID type = readUUID(input);
 		ItemType it = wl.getItemType(type);
 		String longname = readString(input);
 		String shortname = readString(input);
@@ -2239,12 +2239,12 @@ public class Persistence implements IPersistence {
 			if (linkType == null) {
 				break;
 			}
-			CompactUUID destId = readUUID(input);
+			UUID destId = readUUID(input);
 			String destLongName = readString(input);
 
 			String destShortName = readString(input);
 
-			CompactUUID destTypeName = readUUID(input);
+			UUID destTypeName = readUUID(input);
 			String link_info = readString(input);
 
 			int version = input.readInt();
@@ -2261,17 +2261,17 @@ public class Persistence implements IPersistence {
 			if (linkType == null) {
 				break;
 			}
-			CompactUUID destId = readUUID(input);
+			UUID destId = readUUID(input);
 			String destUniqueName = readString(input);
 			String destShortName = readString(input);
-			CompactUUID destTypeName = readUUID(input);
+			UUID destTypeName = readUUID(input);
 			String link_info = readString(input);
 
 			boolean isAggregation = input.readBoolean();
 			boolean isRequire = input.readBoolean();
 			String originLinkTypeID = readString(input);
-			CompactUUID originLinkSourceTypeID = readUUID(input);
-			CompactUUID originLinkDestinationTypeID = readUUID(input);
+			UUID originLinkSourceTypeID = readUUID(input);
+			UUID originLinkDestinationTypeID = readUUID(input);
 			int version = input.readInt();
 
 			ItemDescriptionRef dest = new ItemDescriptionRef(destId, destTypeName, destUniqueName, destShortName);
@@ -2282,12 +2282,12 @@ public class Persistence implements IPersistence {
 		}
 		int size = input.read();
 		for (int i = 0; i < size; i++) {
-			CompactUUID compId = readUUID(input);
+			UUID compId = readUUID(input);
 			String compUniqueName = readString(input);
 			;
 			String compShortName = readString(input);
 			;
-			CompactUUID compTypeName = readUUID(input);
+			UUID compTypeName = readUUID(input);
 
 			desc.addComponantsLink(new ItemDescriptionRef(compId, compTypeName, compUniqueName, compShortName));
 		}
@@ -2307,11 +2307,11 @@ public class Persistence implements IPersistence {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static CompactUUID readUUID(ObjectInput input) throws IOException {
+	public static UUID readUUID(ObjectInput input) throws IOException {
 		long firstLong = input.readLong();
 		if (firstLong == -1)
 			return null;
-		return new CompactUUID(firstLong, firstLong);
+		return new UUID(firstLong, firstLong);
 	}
 
 	/**
@@ -2325,7 +2325,7 @@ public class Persistence implements IPersistence {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static void writeUUID(ObjectOutput output, CompactUUID uuid) throws IOException {
+	public static void writeUUID(ObjectOutput output, UUID uuid) throws IOException {
 		if (uuid == null)
 			output.writeLong(-1);
 		output.writeLong(uuid.getMostSignificantBits());
@@ -2635,7 +2635,7 @@ public class Persistence implements IPersistence {
 	 */
 	public ItemDescription[] load(LogicalWorkspace wl, File directory, boolean failthrow) throws IOException,
 			CadseException {
-		Map<CompactUUID, ItemDescription> items = new HashMap<CompactUUID, ItemDescription>();
+		Map<UUID, ItemDescription> items = new HashMap<UUID, ItemDescription>();
 		IMigrationFormat mig = new MigrationFormat(wl, mLogger);
 		loadItemDescriptionFromRepo(mig, directory, null, items);
 		Collection<ItemDescription> values = items.values();
@@ -2676,7 +2676,7 @@ public class Persistence implements IPersistence {
 		return location_melusine;
 	}
 
-	public File getLocationSer(CompactUUID id) {
+	public File getLocationSer(UUID id) {
 		return fileInWorkspaceV2(id, false);
 	}
 

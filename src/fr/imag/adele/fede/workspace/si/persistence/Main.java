@@ -12,7 +12,7 @@ import java.util.List;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseRuntime;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.EventFilter;
 import fr.imag.adele.cadse.core.IItemManager;
 import fr.imag.adele.cadse.core.Item;
@@ -160,21 +160,21 @@ public class Main {
 		}
 
 		@Override
-		public ItemDelta getOrCreateItemOperation(CompactUUID id, CompactUUID type,
+		public ItemDelta getOrCreateItemOperation(UUID id, UUID type,
 				boolean add) throws CadseException, CadseException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public ItemDelta getOrCreateItemOperation(CompactUUID id, CompactUUID type)
+		public ItemDelta getOrCreateItemOperation(UUID id, UUID type)
 				throws CadseException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public ItemDelta getOrCreateItemOperation(CompactUUID id)
+		public ItemDelta getOrCreateItemOperation(UUID id)
 				throws CadseException {
 			// TODO Auto-generated method stub
 			return null;
@@ -205,13 +205,13 @@ public class Main {
 		}
 
 		@Override
-		public ItemType getItemType(CompactUUID id, boolean createUnresolvedType) {
+		public ItemType getItemType(UUID id, boolean createUnresolvedType) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Item getBaseItem(CompactUUID id) {
+		public Item getBaseItem(UUID id) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -262,7 +262,7 @@ public class Main {
 		}
 
 		@Override
-		public void actionRemoveAttribute(CompactUUID itemId, String key)
+		public void actionRemoveAttribute(UUID itemId, String key)
 				throws CadseException {
 			// TODO Auto-generated method stub
 			
@@ -282,7 +282,7 @@ public class Main {
 		}
 
 		@Override
-		public void actionChangeAttribute(CompactUUID itemId, String key,
+		public void actionChangeAttribute(UUID itemId, String key,
 				Object value) throws CadseException, CadseException {
 			// TODO Auto-generated method stub
 			
@@ -303,7 +303,7 @@ public class Main {
 
 		@Override
 		public ItemDelta actionAddItem(ItemDescriptionRef itemDescriptionRef,
-				CompactUUID parent, LinkType lt) throws CadseException {
+				UUID parent, LinkType lt) throws CadseException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -316,7 +316,7 @@ public class Main {
 		}
 
 		@Override
-		public void actionAddAttribute(CompactUUID itemId, String key, Object value)
+		public void actionAddAttribute(UUID itemId, String key, Object value)
 				throws CadseException, CadseException {
 			// TODO Auto-generated method stub
 			
@@ -361,7 +361,7 @@ public class Main {
 		}
 
 		@Override
-		public List<Link> getUnresolvedLink(CompactUUID id) {
+		public List<Link> getUnresolvedLink(UUID id) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -409,7 +409,7 @@ public class Main {
 		}
 
 		@Override
-		public ItemType getItemType(CompactUUID itemTypeId) {
+		public ItemType getItemType(UUID itemTypeId) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -526,7 +526,7 @@ public class Main {
 		}
 
 		@Override
-		public ItemDelta loadItem(CompactUUID id, CompactUUID type)
+		public ItemDelta loadItem(UUID id, UUID type)
 				throws CadseException {
 			return new PrintItemDelta(id, type);
 		}
@@ -592,7 +592,7 @@ public class Main {
 		}
 
 		@Override
-		public ItemDelta getItemOperation(CompactUUID id) {
+		public ItemDelta getItemOperation(UUID id) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -604,13 +604,13 @@ public class Main {
 		}
 
 		@Override
-		public ItemDelta getItem(CompactUUID itemId, boolean showDeleteItem) {
+		public ItemDelta getItem(UUID itemId, boolean showDeleteItem) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public ItemDelta getItem(CompactUUID id) {
+		public ItemDelta getItem(UUID id) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -651,7 +651,7 @@ public class Main {
 		@Override
 		public ItemType createItemType(ItemType itemTypeType,
 				CadseRuntime cadseName, ItemType superType, int intID,
-				CompactUUID id, String shortName, String displayName,
+				UUID id, String shortName, String displayName,
 				boolean hasContent, boolean isAbstract, IItemManager manager) {
 			// TODO Auto-generated method stub
 			return null;
@@ -675,7 +675,7 @@ public class Main {
 
 		@Override
 		public ItemDelta createItem(ItemType itemType, Item parent, LinkType lt,
-				CompactUUID id, String uniqueName, String shortName)
+				UUID id, String uniqueName, String shortName)
 				throws CadseException {
 			// TODO Auto-generated method stub
 			return null;
@@ -689,8 +689,8 @@ public class Main {
 		}
 
 		@Override
-		public CadseRuntime createCadseRuntime(String name, CompactUUID runtimeId,
-				CompactUUID definitionId) {
+		public CadseRuntime createCadseRuntime(String name, UUID runtimeId,
+				UUID definitionId) {
 			// TODO Auto-generated method stub
 			return null;
 		}

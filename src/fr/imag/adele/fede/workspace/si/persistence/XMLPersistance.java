@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 
 /**
  * The Class XMLPersistance.
@@ -202,7 +202,7 @@ public class XMLPersistance {
 			output.append("\"/>\n");
 			return;
 		}
-		if (value instanceof CompactUUID) {
+		if (value instanceof UUID) {
 			output.append("UUID\" value=\"");
 			output.append(value.toString());
 			output.append("\"/>\n");

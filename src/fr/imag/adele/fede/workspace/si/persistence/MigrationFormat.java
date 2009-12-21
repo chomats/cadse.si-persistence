@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.ItemType;
 
@@ -43,10 +43,10 @@ public class MigrationFormat implements IMigrationFormat {
 	boolean init = false;
 
 	/** The name to uuid. */
-	Map<String, CompactUUID> nameToUUID;
+	Map<String, UUID> nameToUUID;
 
 	/** The new uuid. */
-	private Map<CompactUUID, String> newUUID;
+	private Map<UUID, String> newUUID;
 
 	/** The log. */
 	private Logger log;
@@ -67,15 +67,15 @@ public class MigrationFormat implements IMigrationFormat {
 	/* (non-Javadoc)
 	 * @see fede.workspace.tool.persistance.IMigrationFormat#getOrCreateITID(java.lang.String)
 	 */
-	public CompactUUID getOrCreateITID(String type) {
+	public UUID getOrCreateITID(String type) {
 		if (!init)
 			init();
-		CompactUUID ret = nameToUUID.get(type);
+		UUID ret = nameToUUID.get(type);
 		if (ret == null) {
-			ret  = CompactUUID.randomUUID();
+			ret  = UUID.randomUUID();
 			nameToUUID.put(type, ret);
 			if (newUUID == null)
-				newUUID = new HashMap<CompactUUID, String>();
+				newUUID = new HashMap<UUID, String>();
 			newUUID.put(ret,type);
 			log.warning("Cannot find the type "+type+" create a fictif id "+ret);
 		}
@@ -87,7 +87,7 @@ public class MigrationFormat implements IMigrationFormat {
 	 * Inits the.
 	 */
 	private void init() {
-		nameToUUID = new HashMap<String, CompactUUID>();
+		nameToUUID = new HashMap<String, UUID>();
 		Collection<ItemType> its = workspaceLogique.getItemTypes();
 		for (ItemType it : its) {
 			nameToUUID.put(it.getName(), it.getId());
@@ -98,17 +98,17 @@ public class MigrationFormat implements IMigrationFormat {
 	/* (non-Javadoc)
 	 * @see fede.workspace.tool.persistance.IMigrationFormat#getUnresolvedType()
 	 */
-	public Map<CompactUUID, String> getUnresolvedType() {
+	public Map<UUID, String> getUnresolvedType() {
 		return newUUID;
 	}
 
 	/* (non-Javadoc)
 	 * @see fede.workspace.tool.persistance.IMigrationFormat#getITID(java.lang.String)
 	 */
-	public CompactUUID getITID(String type) {
+	public UUID getITID(String type) {
 		if (!init)
 			init();
-		CompactUUID ret = nameToUUID.get(type);
+		UUID ret = nameToUUID.get(type);
 		return ret;
 	}
 
