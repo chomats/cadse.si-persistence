@@ -1,0 +1,189 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: fr.imag.adele.cadse.si.workspace.persistence
+Bundle-SymbolicName: fr.imag.adele.cadse.si.workspace.persistence;singleton:=true
+Bundle-Vendor: Adele/LIG/ Grenoble University, France
+Bundle-Version: 2.2.1.qualifier
+Bundle-Localization: plugin
+Bundle-ClassPath: .
+Bundle-Description: Bundle fr.imag.adele.cadse.si.workspace.persistence
+Export-Package: fr.imag.adele.fede.workspace.si.persistence;version="2.2.1"
+Import-Package: adele.util.io;version="1.0.0",
+ fede.workspace.domain;version="1.0.0",
+ fede.workspace.domain.root.type;version="1.0.0",
+ fede.workspace.tool.migration;version="1.0.0",
+ fr.imag.adele.cadse.core;version="2.2.1",
+ fr.imag.adele.cadse.core.attribute;version="2.2.1",
+ fr.imag.adele.cadse.core.build;version="2.2.1",
+ fr.imag.adele.cadse.core.delta;version="2.2.1",
+ fr.imag.adele.cadse.core.delta.revision;version="2.2.1",
+ fr.imag.adele.cadse.core.enumdef;version="2.2.1",
+ fr.imag.adele.cadse.core.internal;version="2.2.1",
+ fr.imag.adele.cadse.core.internal.attribute;version="2.2.1",
+ fr.imag.adele.cadse.core.internal.build;version="2.2.1",
+ fr.imag.adele.cadse.core.internal.delta;version="2.2.1",
+ fr.imag.adele.cadse.core.io;version="2.2.1",
+ fr.imag.adele.cadse.core.key;version="2.2.1",
+ fr.imag.adele.cadse.core.oper;version="2.2.1",
+ fr.imag.adele.cadse.core.oper.annotation;version="2.2.1",
+ fr.imag.adele.cadse.core.path;version="2.2.1",
+ fr.imag.adele.cadse.core.transaction;version="2.2.1",
+ fr.imag.adele.cadse.core.ui;version="2.2.1",
+ fr.imag.adele.cadse.core.ui.view;version="2.2.1",
+ fr.imag.adele.cadse.core.util;version="2.2.1",
+ fr.imag.adele.cadse.core.var;version="2.2.1",
+ fr.imag.adele.cadseg.model.type;version="1.0.0",
+ fr.imag.adele.fede.workspace.as.eclipse;version="1.0.0",
+ fr.imag.adele.fede.workspace.as.persistence,
+ fr.imag.adele.fede.workspace.as.platformeclipse;version="1.0.0",
+ org.apache.felix.ipojo;version="1.2.0",
+ org.apache.felix.ipojo.architecture;version="1.2.0",
+ org.eclipse.core.internal.utils,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.core.runtime.jobs,
+ org.eclipse.osgi.util;version="1.1.0",
+ org.osgi.service.cm;version="1.2",
+ org.osgi.service.log;version="1.3"
+Created-By: envsam & iPOJO
+iPOJO-Components: component { $immediate="true" $classname="fr.imag.ade
+ le.fede.workspace.si.persistence.Persistence" $factory="fr.imag.adele.
+ fede.workspace.si.persistence.Persistence" $architecture="true" callba
+ ck { $transition="validate" $method="start" }callback { $transition="i
+ nvalidate" $method="stop" }provides { $specification="fr.imag.adele.fe
+ de.workspace.as.persistence.IPersistence" }manipulation { field { $nam
+ e="cacheDirectory" $type="java.io.File" }field { $name="modelName" $ty
+ pe="java.lang.String[]" }field { $name="enablePersistance" $type="bool
+ ean" }field { $name="wsLocation" $type="java.io.File" }field { $name="
+ saveID" $type="boolean" }field { $name="lock" $type="boolean" }field {
+  $name="modelVersion" $type="int[]" }field { $name="platformEclipse" $
+ type="fr.imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse
+ " }field { $name="cacheItem" $type="java.io.File" }field { $name="work
+ spaceCU" $type="fr.imag.adele.cadse.core.CadseDomain" }field { $name="
+ enableEvent" $type="boolean" }field { $name="enableImportUpdateListner
+ " $type="boolean" }method { $name="$init" }method { $name="existPersis
+ tance" $return="boolean" }method { $name="load" $return="boolean" }met
+ hod { $name="save" }method { $arguments="{java.lang.String}" $name="lo
+ adID_6" $return="fr.imag.adele.fede.workspace.si.persistence.Persisten
+ ce$IDHeader" }method { $arguments="{java.lang.String}" $name="loadID2"
+  }method { $arguments="{java.lang.String[],int[]}" $name="saveID_6" }m
+ ethod { $arguments="{java.io.File,java.lang.String[],int[]}" $name="wr
+ iteIDFileV6" }method { $name="delete" }method { $arguments="{java.lang
+ .String}" $name="existPersistance" $return="boolean" }method { $argume
+ nts="{java.lang.String}" $name="load" $return="boolean" }method { $arg
+ uments="{fr.imag.adele.cadse.core.LogicalWorkspace,java.util.Map}" $na
+ me="migrate" $return="boolean" }method { $arguments="{fr.imag.adele.ca
+ dse.core.ItemDescription}" $name="delete" }method { $arguments="{fr.im
+ ag.adele.cadse.core.Item}" $name="delete" }method { $arguments="{java.
+ io.File}" $name="delete" }method { $arguments="{fr.imag.adele.fede.wor
+ kspace.si.persistence.IMigrationFormat,java.io.File,org.eclipse.core.r
+ untime.IProgressMonitor,java.util.Map}" $name="loadItemDescriptionFrom
+ Repo" }method { $arguments="{fr.imag.adele.fede.workspace.si.persisten
+ ce.IMigrationFormat,java.io.File,boolean}" $name="loadItem" $return="f
+ r.imag.adele.cadse.core.ItemDescription" }method { $arguments="{fr.ima
+ g.adele.cadse.core.Item}" $name="save" }method { $arguments="{fr.imag.
+ adele.cadse.core.Item}" $name="saveInternal" }method { $arguments="{fr
+ .imag.adele.cadse.core.Item,java.io.File}" $name="writeNoContent" }met
+ hod { $arguments="{fr.imag.adele.cadse.core.LogicalWorkspace,fr.imag.a
+ dele.cadse.core.Item,java.io.File,org.eclipse.core.runtime.IProgressMo
+ nitor,java.util.List,fr.imag.adele.fede.workspace.si.persistence.IMigr
+ ationFormat}" $name="importItemRead" }method { $arguments="{fr.imag.ad
+ ele.cadse.core.LogicalWorkspace,java.io.File}" $name="readOrphanReposi
+ tory" $return="fr.imag.adele.cadse.core.Item[]" }method { $name="init"
+  }method { $arguments="{fr.imag.adele.cadse.core.Link}" $name="getCach
+ eItemFile" $return="java.io.File" }method { $arguments="{fr.imag.adele
+ .cadse.core.Item}" $name="getCacheItemFile" $return="java.io.File" }me
+ thod { $arguments="{java.lang.String}" $name="getCacheItemFile" $retur
+ n="java.io.File" }method { $arguments="{fr.imag.adele.cadse.core.Item,
+ java.io.File,boolean}" $name="writeXML" }method { $arguments="{fr.imag
+ .adele.cadse.core.Item,java.io.File,boolean}" $name="write" }method { 
+ $arguments="{fr.imag.adele.fede.workspace.si.persistence.IMigrationFor
+ mat,byte[]}" $name="byteArrayToItemDescription" $return="fr.imag.adele
+ .cadse.core.ItemDescription" }method { $name="disablePersistance" }met
+ hod { $name="reload" $return="boolean" }method { $name="enablePersista
+ nce" }method { $arguments="{fr.imag.adele.cadse.core.Item}" $name="fil
+ eInResource" $return="java.io.File" }method { $arguments="{fr.imag.ade
+ le.cadse.core.Item}" $name="getResourceFromItem" $return="org.eclipse.
+ core.resources.IResource" }method { $arguments="{fr.imag.adele.cadse.c
+ ore.Item}" $name="fileInResourceXml" $return="java.io.File" }method { 
+ $arguments="{java.util.UUID,boolean}" $name="fileInWorkspaceV2" $retur
+ n="java.io.File" }method { $arguments="{java.util.UUID}" $name="fileIn
+ WorkspaceXMLV2" $return="java.io.File" }method { $arguments="{fr.imag.
+ adele.cadse.core.Item}" $name="fileInWorkspace" $return="java.io.File"
+  }method { $arguments="{fr.imag.adele.cadse.core.Item}" $name="fileInW
+ orkspaceV2" $return="java.io.File" }method { $name="isEnablePersistanc
+ e" $return="boolean" }method { $arguments="{java.io.ObjectInput}" $nam
+ e="readItemID_6" $return="java.util.UUID" }method { $name="startListen
+ er" }method { $name="getCadsesName" $return="java.lang.String[]" }meth
+ od { $name="getCadsesVersion" $return="int[]" }method { $arguments="{b
+ oolean}" $name="setEnableEvent" }method { $name="isEnableEvent" $retur
+ n="boolean" }method { $arguments="{java.lang.String[],int[]}" $name="s
+ etModelname" }method { $name="forceSave" }method { $name="start" }meth
+ od { $name="stop" }method { $arguments="{java.lang.Appendable,fr.imag.
+ adele.cadse.core.Item}" $name="writeXML_4" }method { $arguments="{java
+ .lang.Appendable,fr.imag.adele.cadse.core.Link}" $name="externalLinkWr
+ ite" }method { $arguments="{java.lang.Appendable,fr.imag.adele.cadse.c
+ ore.DerivedLink}" $name="externalDerivedLinkWrite" }method { $argument
+ s="{java.lang.Appendable,fr.imag.adele.cadse.core.Item}" $name="extern
+ alComponantsWrite" }method { $arguments="{java.io.ObjectOutput,fr.imag
+ .adele.cadse.core.Item}" $name="writeSer_6" }method { $arguments="{jav
+ a.io.ObjectOutput,fr.imag.adele.cadse.core.ItemDescription}" $name="wr
+ iteSer_6" }method { $arguments="{fr.imag.adele.cadse.core.ItemDescript
+ ion}" $name="itemToByteArray" $return="byte[]" }method { $arguments="{
+ fr.imag.adele.cadse.core.Item}" $name="itemToByteArray" $return="byte[
+ ]" }method { $arguments="{byte[],java.io.File,boolean}" $name="write" 
+ }method { $arguments="{java.io.File}" $name="mkdirs" }method { $argume
+ nts="{fr.imag.adele.cadse.core.ItemDescription,java.io.File}" $name="w
+ riteSer" }method { $arguments="{fr.imag.adele.cadse.core.Item,java.io.
+ File}" $name="writeSer" }method { $arguments="{fr.imag.adele.fede.work
+ space.si.persistence.IMigrationFormat,java.io.ObjectInput}" $name="rea
+ dSerHeader_4_or_5_6" $return="fr.imag.adele.cadse.core.ItemDescription
+ Ref" }method { $arguments="{java.io.ObjectInput}" $name="readSerHeader
+ _6" $return="fr.imag.adele.cadse.core.ItemDescriptionRef" }method { $a
+ rguments="{fr.imag.adele.fede.workspace.si.persistence.IMigrationForma
+ t,java.io.ObjectInput}" $name="readSer_5" $return="fr.imag.adele.cadse
+ .core.ItemDescription" }method { $arguments="{fr.imag.adele.cadse.core
+ .LogicalWorkspace,fr.imag.adele.fede.workspace.si.persistence.ObjectIn
+ putStream}" $name="readSer_6" $return="fr.imag.adele.cadse.core.ItemDe
+ scription" }method { $arguments="{java.io.ObjectInput}" $name="readUUI
+ D" $return="java.util.UUID" }method { $arguments="{java.io.ObjectOutpu
+ t,java.util.UUID}" $name="writeUUID" }method { $arguments="{java.io.Ob
+ jectOutput,java.lang.String}" $name="writeString" }method { $arguments
+ ="{java.io.ObjectInput}" $name="readString" $return="java.lang.String"
+  }method { $arguments="{java.io.File}" $name="readModelType_ItemType" 
+ $return="java.lang.String[]" }method { $arguments="{fr.imag.adele.cads
+ e.core.LogicalWorkspace,fr.imag.adele.fede.workspace.si.persistence.IM
+ igrationFormat,java.io.File}" $name="readSer" $return="fr.imag.adele.c
+ adse.core.ItemDescription" }method { $arguments="{fr.imag.adele.cadse.
+ core.LogicalWorkspace,fr.imag.adele.fede.workspace.si.persistence.IMig
+ rationFormat,byte[]}" $name="readFromByteArray" $return="fr.imag.adele
+ .cadse.core.ItemDescription" }method { $arguments="{fr.imag.adele.cads
+ e.core.ItemDescription,java.lang.String,java.lang.String}" $name="move
+ Attribute" }method { $arguments="{fr.imag.adele.fede.workspace.si.pers
+ istence.IMigrationFormat,java.io.File}" $name="readSerH" $return="fr.i
+ mag.adele.cadse.core.ItemDescriptionRef" }method { $arguments="{fr.ima
+ g.adele.cadse.core.transaction.LogicalWorkspaceTransaction,java.io.Inp
+ utStream}" $name="loadFromPersistence" $return="fr.imag.adele.cadse.co
+ re.delta.ItemDelta" }method { $arguments="{fr.imag.adele.cadse.core.tr
+ ansaction.LogicalWorkspaceTransaction,java.net.URL}" $name="loadFromPe
+ rsistence" $return="fr.imag.adele.cadse.core.delta.ItemDelta" }method 
+ { $name="saveModelNameIfNeed" }method { $arguments="{int[],int[]}" $na
+ me="equals" $return="boolean" }method { $arguments="{java.lang.String[
+ ],java.lang.String[]}" $name="equals" $return="boolean" }method { $arg
+ uments="{fr.imag.adele.cadse.core.LogicalWorkspace,java.io.File,boolea
+ n}" $name="load" $return="fr.imag.adele.cadse.core.ItemDescription[]" 
+ }method { $arguments="{fr.imag.adele.cadse.core.Item,java.io.File}" $n
+ ame="save" }method { $name="getCadseDomain" $return="fr.imag.adele.cad
+ se.core.CadseDomain" }method { $name="getPlatformEclipse" $return="fr.
+ imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse" }method
+  { $arguments="{java.io.File}" $name="setLocation" }method { $name="ge
+ tLocation" $return="java.io.File" }method { $arguments="{java.util.UUI
+ D}" $name="getLocationSer" $return="java.io.File" }method { $arguments
+ ="{fr.imag.adele.cadse.core.Item[]}" $name="save" }method { $name="sav
+ eAll" }interface { $name="fr.imag.adele.fede.workspace.as.persistence.
+ IPersistence" }}requires { $field="platformEclipse" $optional="false" 
+ }requires { $field="workspaceCU" $optional="false" }}instance { $compo
+ nent="fr.imag.adele.fede.workspace.si.persistence.Persistence" $name="
+ fr.imag.adele.cadse.si.workspace.persistence.instance" }
+ipojo-auto-start: true
+
