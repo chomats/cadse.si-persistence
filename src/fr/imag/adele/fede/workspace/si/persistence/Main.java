@@ -26,16 +26,16 @@ import fr.imag.adele.cadse.core.WSModelState;
 import fr.imag.adele.cadse.core.WorkspaceListener;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.core.attribute.SetAttrVal;
-import fr.imag.adele.cadse.core.delta.ImmutableWorkspaceDelta;
-import fr.imag.adele.cadse.core.delta.ItemDelta;
-import fr.imag.adele.cadse.core.delta.LinkDelta;
-import fr.imag.adele.cadse.core.delta.MappingOperation;
-import fr.imag.adele.cadse.core.delta.OrderOperation;
-import fr.imag.adele.cadse.core.delta.SetAttributeOperation;
-import fr.imag.adele.cadse.core.delta.WLWCOperationImpl;
+import fr.imag.adele.cadse.core.transaction.delta.ImmutableWorkspaceDelta;
+import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
+import fr.imag.adele.cadse.core.transaction.delta.LinkDelta;
+import fr.imag.adele.cadse.core.transaction.delta.MappingOperation;
+import fr.imag.adele.cadse.core.transaction.delta.OrderOperation;
+import fr.imag.adele.cadse.core.transaction.delta.SetAttributeOperation;
+import fr.imag.adele.cadse.core.transaction.delta.WLWCOperationImpl;
 import fr.imag.adele.cadse.core.internal.ILoggableAction;
 import fr.imag.adele.cadse.core.internal.IWorkspaceNotifier;
-import fr.imag.adele.cadse.core.key.ISpaceKey;
+import fr.imag.adele.cadse.core.key.Key;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransactionListener;
 import fr.imag.adele.cadse.core.ui.view.FilterContext;
@@ -223,7 +223,7 @@ public class Main {
 		}
 
 		@Override
-		public boolean containsSpaceKey(ISpaceKey key) {
+		public boolean containsSpaceKey(Key key) {
 			// TODO Auto-generated method stub
 			return false;
 		}
@@ -421,7 +421,7 @@ public class Main {
 		}
 
 		@Override
-		public Item getItem(ISpaceKey key) {
+		public Item getItem(Key key) {
 			// TODO Auto-generated method stub
 			return null;
 		}
