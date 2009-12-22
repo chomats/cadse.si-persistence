@@ -30,7 +30,7 @@ import fr.imag.adele.cadse.core.Link;
 import fr.imag.adele.cadse.core.WSEvent;
 import fr.imag.adele.cadse.core.WorkspaceListener;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
-import fr.imag.adele.cadse.core.delta.ImmutableWorkspaceDelta;
+import fr.imag.adele.cadse.core.transaction.delta.ImmutableWorkspaceDelta;
 
 /**
  * The Class WSPersitanceService.

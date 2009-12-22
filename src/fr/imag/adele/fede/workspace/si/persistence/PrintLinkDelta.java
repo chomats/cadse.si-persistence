@@ -10,13 +10,13 @@ import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.Link;
 import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
-import fr.imag.adele.cadse.core.delta.CreateOperation;
-import fr.imag.adele.cadse.core.delta.DeleteOperation;
-import fr.imag.adele.cadse.core.delta.ItemDelta;
-import fr.imag.adele.cadse.core.delta.LinkDelta;
-import fr.imag.adele.cadse.core.delta.OperationType;
-import fr.imag.adele.cadse.core.delta.SetAttributeOperation;
-import fr.imag.adele.cadse.core.delta.WLWCOperation;
+import fr.imag.adele.cadse.core.transaction.delta.CreateOperation;
+import fr.imag.adele.cadse.core.transaction.delta.DeleteOperation;
+import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
+import fr.imag.adele.cadse.core.transaction.delta.LinkDelta;
+import fr.imag.adele.cadse.core.transaction.delta.OperationType;
+import fr.imag.adele.cadse.core.transaction.delta.SetAttributeOperation;
+import fr.imag.adele.cadse.core.transaction.delta.WLWCOperation;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 
 public class PrintLinkDelta implements LinkDelta {

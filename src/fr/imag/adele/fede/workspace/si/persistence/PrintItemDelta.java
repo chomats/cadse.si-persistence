@@ -37,19 +37,19 @@ import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.core.attribute.IntegerAttributeType;
 import fr.imag.adele.cadse.core.attribute.StringAttributeType;
 import fr.imag.adele.cadse.core.attribute.URLAttributeType;
-import fr.imag.adele.cadse.core.delta.CreateOperation;
-import fr.imag.adele.cadse.core.delta.DeleteOperation;
-import fr.imag.adele.cadse.core.delta.ImmutableWorkspaceDelta;
-import fr.imag.adele.cadse.core.delta.ItemDelta;
-import fr.imag.adele.cadse.core.delta.LinkDelta;
-import fr.imag.adele.cadse.core.delta.MappingOperation;
-import fr.imag.adele.cadse.core.delta.OperationType;
-import fr.imag.adele.cadse.core.delta.OrderOperation;
-import fr.imag.adele.cadse.core.delta.SetAttributeOperation;
-import fr.imag.adele.cadse.core.delta.WLWCOperation;
+import fr.imag.adele.cadse.core.transaction.delta.CreateOperation;
+import fr.imag.adele.cadse.core.transaction.delta.DeleteOperation;
+import fr.imag.adele.cadse.core.transaction.delta.ImmutableWorkspaceDelta;
+import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
+import fr.imag.adele.cadse.core.transaction.delta.LinkDelta;
+import fr.imag.adele.cadse.core.transaction.delta.MappingOperation;
+import fr.imag.adele.cadse.core.transaction.delta.OperationType;
+import fr.imag.adele.cadse.core.transaction.delta.OrderOperation;
+import fr.imag.adele.cadse.core.transaction.delta.SetAttributeOperation;
+import fr.imag.adele.cadse.core.transaction.delta.WLWCOperation;
 import fr.imag.adele.cadse.core.internal.IWorkingLoadingItems;
 import fr.imag.adele.cadse.core.internal.IWorkspaceNotifier;
-import fr.imag.adele.cadse.core.key.ISpaceKey;
+import fr.imag.adele.cadse.core.key.Key;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.ui.Pages;
 import fr.imag.adele.cadse.core.ui.view.FilterContext;
@@ -510,7 +510,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void setKey(ISpaceKey newkey) {
+	public void setKey(Key newkey) {
 		// TODO Auto-generated method stub
 
 	}
@@ -802,7 +802,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public ISpaceKey getKey() {
+	public Key getKey() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1608,13 +1608,13 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public ISpaceKey getNextKey() {
+	public Key getNextKey() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setNextKey(ISpaceKey newK) throws CadseException {
+	public void setNextKey(Key newK) throws CadseException {
 		// TODO Auto-generated method stub
 		
 	}

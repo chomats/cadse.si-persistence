@@ -72,7 +72,7 @@ import fr.imag.adele.cadse.core.LinkDescription;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.WSModelState;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
-import fr.imag.adele.cadse.core.delta.ItemDelta;
+import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.util.Assert;
 import fr.imag.adele.fede.workspace.as.persistence.IPersistence;
