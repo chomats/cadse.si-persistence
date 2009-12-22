@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ipojo>
-	<component immediate="true" classname="fr.imag.adele.fede.workspace.si.persistence.Persistence" factory="fr.imag.adele.fede.workspace.si.persistence.Persistence" architecture="true">
+	<component immediate="true" classname="fr.imag.adele.fede.workspace.si.persistence.PersistenceNew2009" 
+	factory="fr.imag.adele.fede.workspace.si.persistence.PersistenceNew2009" architecture="true">
 		<callback transition="validate" method="start"/>
 		<callback transition="invalidate" method="stop"/>
 		<provides specification="fr.imag.adele.fede.workspace.as.persistence.IPersistence"/>
 		<requires field="platformEclipse" optional="false"/>
 		<requires field="workspaceCU" optional="false"/>
 	</component>
-	<instance component="fr.imag.adele.fede.workspace.si.persistence.Persistence" name="fr.imag.adele.cadse.si.workspace.persistence.instance"/>
+	<instance component="fr.imag.adele.fede.workspace.si.persistence.PersistenceNew2009" 
+		name="fr.imag.adele.cadse.si.workspace.persistence.instance"/>
 </ipojo>
