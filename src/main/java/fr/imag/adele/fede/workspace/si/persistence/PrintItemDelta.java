@@ -16,8 +16,10 @@ import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseError;
 import fr.imag.adele.cadse.core.CadseException;
 import java.util.UUID;
+
+import fr.imag.adele.cadse.core.CadseRuntime;
 import fr.imag.adele.cadse.core.ContentChangeInfo;
-import fr.imag.adele.cadse.core.ContentItem;
+import fr.imag.adele.cadse.core.content.ContentItem;
 import fr.imag.adele.cadse.core.DerivedLink;
 import fr.imag.adele.cadse.core.DerivedLinkDescription;
 import fr.imag.adele.cadse.core.EventFilter;
@@ -31,12 +33,14 @@ import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.Link;
 import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
+import fr.imag.adele.cadse.core.TypeDefinition;
 import fr.imag.adele.cadse.core.WorkspaceListener;
 import fr.imag.adele.cadse.core.attribute.BooleanAttributeType;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.core.attribute.IntegerAttributeType;
 import fr.imag.adele.cadse.core.attribute.StringAttributeType;
 import fr.imag.adele.cadse.core.attribute.URLAttributeType;
+import fr.imag.adele.cadse.core.build.Exporter;
 import fr.imag.adele.cadse.core.transaction.delta.CreateOperation;
 import fr.imag.adele.cadse.core.transaction.delta.DeleteOperation;
 import fr.imag.adele.cadse.core.transaction.delta.ImmutableWorkspaceDelta;
@@ -55,13 +59,13 @@ import fr.imag.adele.cadse.core.ui.Pages;
 import fr.imag.adele.cadse.core.ui.view.FilterContext;
 import fr.imag.adele.cadse.core.ui.view.NewContext;
 import fr.imag.adele.cadse.core.util.IErrorCollector;
-import fr.imag.adele.cadse.core.util.OrderWay;
+import fr.imag.adele.cadse.util.OrderWay;
 
 public class PrintItemDelta implements ItemDelta {
 	
 	private String _name;
 	private String _qname;
-	HashMap<String , Object> _atts = new HashMap<String, Object>();
+	HashMap<IAttributeType<?> , Object> _atts = new HashMap<IAttributeType<?>, Object>();
 	private UUID _id;
 	private UUID _type;
 	private ArrayList<LinkDelta> links=  new ArrayList<LinkDelta>();
@@ -253,13 +257,6 @@ public class PrintItemDelta implements ItemDelta {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public LinkDelta getOutgoingLink(String lt, UUID destId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public LinkDelta getOutgoingLinkOperation(Link l) throws CadseException {
 		// TODO Auto-generated method stub
@@ -358,12 +355,6 @@ public class PrintItemDelta implements ItemDelta {
 		return null;
 	}
 
-	@Override
-	public SetAttributeOperation getSetAttributeOperation(String key,
-			boolean create) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String getStringAttribut(StringAttributeType key, String defaultValue) {
@@ -371,11 +362,6 @@ public class PrintItemDelta implements ItemDelta {
 		return null;
 	}
 
-	@Override
-	public ItemType getType(boolean createUnresolvedType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public URL getURLAttribut(URLAttributeType key)
@@ -418,15 +404,9 @@ public class PrintItemDelta implements ItemDelta {
 	@Override
 	public void loadAttribute(IAttributeType<?> key, Object value)
 			throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void loadAttribute(String key, Object value) throws CadseException {
 		_atts.put(key, value);
-
 	}
+
 
 	@Override
 	public void loadContent() {
@@ -441,14 +421,6 @@ public class PrintItemDelta implements ItemDelta {
 			UUID uuidOriginLinkDestinationTypeID, int version) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public LinkDelta loadLink(String linkType, ItemDelta destItem)
-			throws CadseException {
-PrintLinkDelta  l = new PrintLinkDelta( linkType, destItem);
-links.add(l);// TODO Auto-generated method stub
-		return l;
 	}
 
 	@Override
@@ -501,14 +473,7 @@ links.add(l);// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public void setAttribute(IAttributeType<?> key, String attributeName,
-			Object newCurrentValue, boolean loaded) throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	@Override
 	public void setKey(Key newkey) {
 		// TODO Auto-generated method stub
@@ -555,20 +520,6 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void setShortName(String shortname, boolean loaded)
-			throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setUniqueName(String uniqueName, boolean loaded)
-			throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setUpdate(boolean update) {
 		// TODO Auto-generated method stub
 
@@ -596,9 +547,13 @@ links.add(l);// TODO Auto-generated method stub
 			XMLPersistance.writeXML(sb, "type", _type.toString());
 			
 			sb.append(">\n");
-			for (String k : _atts.keySet()) {
+			for (IAttributeType<?> k : _atts.keySet()) {
 				sb.append(tab).append("  <attribute ");
-				XMLPersistance.writeXML(sb, "name", k);
+				XMLPersistance.writeXML(sb, "id", k.getId().toString());
+				XMLPersistance.writeXML(sb, "id", k.getSource().getId().toString());
+				XMLPersistance.writeXML(sb, "id", k.getSource().getCadseId().toString());
+				
+				XMLPersistance.writeXML(sb, "name", k.getName());
 				XMLPersistance.writeXML(sb, "value", _atts.get(k).toString());
 				sb.append("\\>\n");
 			}
@@ -658,12 +613,6 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public boolean containsComponent(UUID itemId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean containsPartChild(Item item) {
 		// TODO Auto-generated method stub
 		return false;
@@ -713,44 +662,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public Set<UUID> getComponentIds() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Item getComponentInfo(UUID itemId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<Item> getComponents() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Item> getCompositeParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ContentItem getContentItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<DerivedLinkDescription> getDerivedLinkDescriptions(
-			ItemDescription source) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<DerivedLink> getDerivedLinks() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -963,18 +875,6 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public String getUniqueName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUniqueName(boolean recompute) throws CadseException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public int getVersion() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -1018,12 +918,6 @@ links.add(l);// TODO Auto-generated method stub
 
 	@Override
 	public boolean isInOutgoingLinks(Link l) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isInstanceOf(ItemType it) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1102,25 +996,6 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void setComponents(Set<ItemDescriptionRef> comp)
-			throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setDerivedLinks(Set<DerivedLinkDescription> derivedLinks) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setName(String name) throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public Link setOutgoingItem(LinkType linkType, Item dest)
 			throws CadseException {
 		// TODO Auto-generated method stub
@@ -1135,22 +1010,11 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void setQualifiedName(String qualifiedName) throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setReadOnly(boolean readOnly) throws CadseException {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	public void setShortName(String name) throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void setState(ItemState newState) {
@@ -1158,11 +1022,6 @@ links.add(l);// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	public void setUniqueName(String qualifiedName) throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void setValid(boolean isValid) {
@@ -1188,23 +1047,6 @@ links.add(l);// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public <T> T getAttribute(String att) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> T getAttributeH(String att, boolean fromSuperIfNull) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String[] getAttributeKeys() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public <T> T getAttributeOwner(IAttributeType<T> att) {
@@ -1220,12 +1062,6 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public <T> T getAttributeWithDefaultValue(String att, T defaultValue) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean isTWAttributeModified(IAttributeType<?> att) {
 		// TODO Auto-generated method stub
 		return false;
@@ -1234,12 +1070,6 @@ links.add(l);// TODO Auto-generated method stub
 	@Override
 	public void setAttribute(IAttributeType<?> att, Object value)
 			throws CadseException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setAttribute(String att, Object value) throws CadseException {
 		// TODO Auto-generated method stub
 
 	}
@@ -1313,13 +1143,6 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public boolean commitMove(OrderWay kind, Link l1, Link l2)
-			throws CadseException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean commitSetAttribute(IAttributeType<?> type, Object value) {
 		// TODO Auto-generated method stub
 		return false;
@@ -1345,19 +1168,7 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public <T> T internalGetGenericOwnerAttribute(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public <T> T internalGetGenericOwnerAttribute(IAttributeType<T> type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> T internalGetOwnerAttribute(String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1425,19 +1236,6 @@ links.add(l);// TODO Auto-generated method stub
 	}
 
 	@Override
-	public <T> T getAttribute(String key, boolean returnDefault) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IAttributeType<?> getAttributeType(
-			SetAttributeOperation setAttributeOperation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public CreateOperation getCreateOperation() {
 		// TODO Auto-generated method stub
 		return null;
@@ -1455,11 +1253,6 @@ links.add(l);// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public SetAttributeOperation getSetAttributeOperation(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public boolean isAdded() {
@@ -1482,12 +1275,6 @@ links.add(l);// TODO Auto-generated method stub
 
 	@Override
 	public OperationType getOperationType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public WLWCOperation getParent() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1680,6 +1467,160 @@ links.add(l);// TODO Auto-generated method stub
 	public Pages getModificationPages(FilterContext context) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void addItemType(ItemType it) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public LinkDelta getOutgoingLink(UUID ltId, String lt, UUID destId)
+			throws CadseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SetAttributeOperation getSetAttributeOperation(
+			IAttributeType<?> key, boolean create) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LinkDelta loadLink(LinkType linkType, ItemDelta destItem)
+			throws CadseException {
+
+		PrintLinkDelta  l = new PrintLinkDelta( linkType, destItem);
+		links.add(l);// TODO Auto-generated method stub
+		return l;
+	}
+
+	@Override
+	public LinkDelta loadLink(int linkId, LinkType lt, ItemDelta dest)
+			throws CadseException {
+		PrintLinkDelta  l = new PrintLinkDelta( lt, dest);
+		l.setObjectID(linkId);
+		links.add(l);// TODO Auto-generated method stub
+		return l;
+	}
+
+	@Override
+	public void setAttribute(IAttributeType<?> key, Object newCurrentValue,
+			boolean loaded) throws CadseException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCadseId(int int1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setParentId(int parentID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public CadseRuntime getCadse() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Exporter[] getExporter(Class<?> exporterType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getIdInPackage() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean isInstanceOf(TypeDefinition it) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setCadse(CadseRuntime cr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setIdInPackage(int idInPackage) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getObjectId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setUUID(long uuidMsb, long uuidLsb) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setUUID(UUID uuid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IAttributeType<?> getLocalAttributeType(UUID attrName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean commitMove(fr.imag.adele.cadse.util.OrderWay kind, Link l1,
+			Link l2) throws CadseException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public SetAttributeOperation getSetAttributeOperation(IAttributeType<?> key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public WLWCOperation getParentOperDelta() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UUID getCadseId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setName(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setQualifiedName(String qualifiedName) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

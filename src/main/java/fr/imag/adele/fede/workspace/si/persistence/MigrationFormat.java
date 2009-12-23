@@ -26,8 +26,11 @@ import java.util.logging.Logger;
 
 
 import java.util.UUID;
+
+import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.ItemType;
+import fr.imag.adele.cadse.core.attribute.IAttributeType;
 
 /**
  * The Class MigrationFormat.
@@ -110,6 +113,23 @@ public class MigrationFormat implements IMigrationFormat {
 			init();
 		UUID ret = nameToUUID.get(type);
 		return ret;
+	}
+
+	@Override
+	public IAttributeType<?> findAttributeFrom(ItemType it, String attName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ItemType findTypeFrom(UUID id) {
+		return workspaceLogique.getItemType(id);
+	}
+
+	@Override
+	public LinkType findlinkTypeFrom(ItemType itObject, String linkType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

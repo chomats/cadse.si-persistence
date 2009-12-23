@@ -23,6 +23,10 @@ import java.util.Map;
 
 import java.util.UUID;
 
+import fr.imag.adele.cadse.core.ItemType;
+import fr.imag.adele.cadse.core.LinkType;
+import fr.imag.adele.cadse.core.attribute.IAttributeType;
+
 /**
  * The Interface IMigrationFormat.
  * 
@@ -56,5 +60,11 @@ public interface IMigrationFormat {
 	 * @return the unresolved type
 	 */
 	Map<UUID, String> getUnresolvedType();
+	
+	ItemType findTypeFrom(UUID id);
+
+	IAttributeType<?> findAttributeFrom(ItemType it, String attName);
+
+	LinkType findlinkTypeFrom(ItemType itObject, String linkType);
 
 }
