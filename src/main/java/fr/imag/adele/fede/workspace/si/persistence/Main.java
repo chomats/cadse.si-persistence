@@ -15,6 +15,7 @@ import fr.imag.adele.cadse.core.CadseRuntime;
 import java.util.UUID;
 import fr.imag.adele.cadse.core.EventFilter;
 import fr.imag.adele.cadse.core.IItemManager;
+import fr.imag.adele.cadse.core.INamedUUID;
 import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemDescriptionRef;
 import fr.imag.adele.cadse.core.ItemType;
@@ -22,6 +23,7 @@ import fr.imag.adele.cadse.core.Link;
 import fr.imag.adele.cadse.core.LinkDescription;
 import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.ProjectAssociation;
+import fr.imag.adele.cadse.core.TypeDefinition;
 import fr.imag.adele.cadse.core.WSModelState;
 import fr.imag.adele.cadse.core.WorkspaceListener;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
@@ -49,51 +51,761 @@ public class Main {
 	
 	private static final class PrintLogicalW implements
 			LogicalWorkspaceTransaction {
+
 		@Override
-		public void setLog(ILoggableAction log) {
+		public void addListener(WorkspaceListener l, int eventFilter) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void remove(ItemDelta itemOperation) {
+		public void addListener(WorkspaceListener l, EventFilter eventFilter) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyDoubleClick(ItemDelta item) throws CadseException {
+		public void checkAll() throws CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyDeletedLink(LinkDelta link) throws CadseException {
+		public void check_write() {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyDeletedItem(ItemDelta item) throws CadseException {
+		public void clear() throws CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyCreatedLink(LinkDelta link) throws CadseException {
+		public void commit() throws CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyCreatedItem(ItemDelta item) throws CadseException {
+		public Collection<Item> commit(boolean update, boolean forceToSave,
+				boolean forceLoad,
+				Collection<ProjectAssociation> projectAssociationSet)
+				throws CadseException, IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CadseRuntime createCadseRuntime(String name, UUID runtimeId,
+				UUID definitionId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta createEmptyItem(UUID id) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta createItem(ItemType itemType, Item parent,
+				LinkType partLinkType) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta createItem(NewContext c) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta createItem(ItemType itemType, Item parent,
+				LinkType lt, UUID id, String uniqueName, String shortName)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta createItemIfNeed(String uniqueName, String shortname,
+				ItemType itemType, Item parent, LinkType partLinkType,
+				Object... attributes) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta createItemIfNeed(ItemType itemType, Item parent,
+				LinkType partLinkType, String uniqueName, String shortName,
+				SetAttrVal<?>... attributes) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemType createItemType(ItemType itemTypeType,
+				CadseRuntime cadseName, ItemType superType, int intID, UUID id,
+				String shortName, String displayName, boolean hasContent,
+				boolean isAbstract, IItemManager manager) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public LinkDelta createLinkIfNeed(ItemDelta source, Item dest,
+				LinkType linkType) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public LogicalWorkspaceTransaction createTransaction() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<WorkspaceListener> filter(int filters,
+				ImmutableWorkspaceDelta workspaceDelta) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IAttributeType<?> findAttribute(UUID key, UUID attSourceType,
+				UUID attSourceCadsetype, UUID attTypeType, UUID attTypeCadsetype)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IAttributeType<?> findAttribute(ItemDelta attHeader,
+				ItemDelta attSourceHeader) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public LinkType findLinkType(UUID linkTypeID, UUID lTSourceType,
+				UUID lTSourceCadsetype, UUID lTDestType, UUID lTDestCadsetype)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public LinkType findLinkType(ItemDelta ltHeader,
+				ItemDelta ltSourceHeader, ItemDelta ltDestTypeHeader)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TypeDefinition findTypeDefinition(UUID id, UUID cadse,
+				boolean createUnresolved) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TypeDefinition findTypeDefinition(ItemDelta destHeader, boolean b)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <T> T getAttribute(Item source, IAttributeType<T> type,
+				boolean ownerOnly) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <T> T getAttribute(Item source, String key, boolean ownerOnly) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta getItem(UUID id) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta getItem(UUID itemId, boolean showDeleteItem) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta getItem(Item item) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<ItemDelta> getItemOperations() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public LinkDelta getLink(Link link) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ContextVariable getNewContext() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ContextVariable getOldContext() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isCommitted() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isModified() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isUpdate() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void load() {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyChangeLinkOrder(LinkDelta link,
-				OrderOperation orderOperation) throws CadseException,
+		public void loadCadseModel(String qualifiedCadseModelName) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public ItemDelta loadItem(ItemDescriptionRef itemRef)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta loadItem(UUID id, ItemType type) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta loadItem(UUID id, UUID type) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta loadItem(Item item) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void loadItems(Collection<URL> itemdescription)
+				throws CadseException, IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void notifyAbortTransaction() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void notifyCommitTransaction() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeListener(WorkspaceListener l) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void rollback() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setAttribute(Item item, IAttributeType<?> key, Object value) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean canDeleteInverseLink(Link link) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean canDeleteLink(Link link) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public IAttributeType<?> createUnresolvedAttributeType(
+				TypeDefinition sourceType, ItemType attrType, UUID attrID,
+				String attName) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public LinkType createUnresolvedLinkType(UUID id, String linkTypeName,
+				TypeDefinition sourceType, TypeDefinition destType) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean existsItem(Item item) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean existsItem(Item item, String shortName)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public LinkType findLinkType(ItemType sourceType, ItemType destType,
+				UUID ltId, String ltName, boolean createUnresolvedObject) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CadseDomain getCadseDomain() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String[] getCadseName() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CadseRuntime[] getCadseRuntime() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int[] getCadseVersion() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ContextVariable getContext() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Item getItem(String qualifiedName) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Item getItem(Key key) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Item getItemByName(TypeDefinition type, String name) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemType getItemType(UUID itemTypeId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemType getItemTypeByName(String shortName) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<ItemType> getItemTypes() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<Item> getItems(String it) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<Item> getItems(TypeDefinition it) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<Item> getItems() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public NewContext[] getNewContextFrom(FilterContext context) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public WSModelState getState() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<Item> getUnresolvedItem() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<Link> getUnresolvedLink(UUID id) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<Link> getUnresolvedLinks() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setState(WSModelState state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void addLogicalWorkspaceTransactionListener(
+				LogicalWorkspaceTransactionListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public LogicalWorkspaceTransactionListener[] getLogicalWorkspaceTransactionListener() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void removeLogicalWorkspaceTransactionListener(
+				LogicalWorkspaceTransactionListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public <T> T adapt(Class<T> clazz) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void addKey(INamedUUID item, Key key) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void changeKey(INamedUUID item, Key oldKey, Key newKey) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Key[] getChildrenKey(Key aThis) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void actionAdd(ItemDelta item) throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public <T> void actionAddAttribute(UUID itemId, IAttributeType<T> key,
+				T value) throws CadseException, CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public <T> void actionAddAttribute(LinkDescription linkDescription,
+				IAttributeType<T> key, T value) throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public ItemDelta actionAddItem(ItemDescriptionRef itemDescriptionRef,
+				UUID parent, LinkType lt) throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void actionAddLink(LinkDescription linkDescription)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void actionAddOperation(WLWCOperationImpl operation) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public <T> void actionChangeAttribute(UUID itemId,
+				IAttributeType<T> key, T value) throws CadseException,
+				CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public <T> void actionChangeAttribute(LinkDescription linkDescription,
+				IAttributeType<T> key, T value) throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void actionDelete(ItemDelta item) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public <T> void actionRemoveAttribute(UUID itemId, IAttributeType<T> key)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public <T> void actionRemoveAttribute(LinkDescription linkDescription,
+				IAttributeType<T> key) throws CadseException, CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void actionRemoveItem(ItemDescriptionRef itemDescriptionRef)
+				throws CadseException, CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void actionRemoveLink(LinkDescription linkDescription)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void actionRemoveOperation(WLWCOperationImpl operation) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void addLoadedItem(Item item) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean containsSpaceKey(Key key) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean containsUniqueName(String un) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public Item getBaseItem(UUID id) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemType getItemType(UUID cadseId, UUID id,
+				boolean createUnresolvedType) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ILoggableAction getLog() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ElementsOrder<MappingOperation> getMappingOrder() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IWorkspaceNotifier getNotifier() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<WLWCOperationImpl> getOperations() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta getOrCreateItemOperation(UUID id)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta getOrCreateItemOperation(UUID id, UUID type)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta getOrCreateItemOperation(UUID id, UUID type,
+				boolean add) throws CadseException, CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ItemDelta getOrCreateItemOperation(Item itembase)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<ProjectAssociation> getProjectAssociationSet() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TypeDefinition getTypeDefinition(UUID cadseId, UUID id,
+				boolean createUnresolvedType) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isForceToSave() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isForcetoLoad() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void notifyAddMappingOperation(ItemDelta item,
+				MappingOperation mappingOperation) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void notifyCancelCreatedItem(ItemDelta item)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void notifyCancelCreatedLink(LinkDelta link)
+				throws CadseException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void notifyChangeAttribute(ItemDelta item,
+				SetAttributeOperation attOperation) throws CadseException,
 				CadseException {
 			// TODO Auto-generated method stub
 			
@@ -108,656 +820,60 @@ public class Main {
 		}
 
 		@Override
-		public void notifyChangeAttribute(ItemDelta item,
-				SetAttributeOperation attOperation) throws CadseException,
+		public void notifyChangeLinkOrder(LinkDelta link,
+				OrderOperation orderOperation) throws CadseException,
 				CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyCancelCreatedLink(LinkDelta link) throws CadseException {
+		public void notifyCreatedItem(ItemDelta item) throws CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyCancelCreatedItem(ItemDelta item) throws CadseException {
+		public void notifyCreatedLink(LinkDelta link) throws CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void notifyAddMappingOperation(ItemDelta item,
-				MappingOperation mappingOperation) {
+		public void notifyDeletedItem(ItemDelta item) throws CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public boolean isForcetoLoad() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean isForceToSave() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public Collection<ProjectAssociation> getProjectAssociationSet() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta getOrCreateItemOperation(Item itembase)
-				throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta getOrCreateItemOperation(UUID id, UUID type,
-				boolean add) throws CadseException, CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta getOrCreateItemOperation(UUID id, UUID type)
-				throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta getOrCreateItemOperation(UUID id)
-				throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Collection<WLWCOperationImpl> getOperations() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public IWorkspaceNotifier getNotifier() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ElementsOrder<MappingOperation> getMappingOrder() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ILoggableAction getLog() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemType getItemType(UUID id, boolean createUnresolvedType) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Item getBaseItem(UUID id) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean containsUniqueName(String un) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean containsSpaceKey(Key key) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public void addLoadedItem(Item item) {
+		public void notifyDeletedLink(LinkDelta link) throws CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void actionRemoveOperation(WLWCOperationImpl operation) {
+		public void notifyDoubleClick(ItemDelta item) throws CadseException {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void actionRemoveLink(LinkDescription linkDescription)
-				throws CadseException {
+		public void remove(ItemDelta itemOperation) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void actionRemoveItem(ItemDescriptionRef itemDescriptionRef)
-				throws CadseException, CadseException {
+		public void setLog(ILoggableAction log) {
 			// TODO Auto-generated method stub
 			
-		}
-
-		@Override
-		public void actionRemoveAttribute(LinkDescription linkDescription,
-				String key) throws CadseException, CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void actionRemoveAttribute(UUID itemId, String key)
-				throws CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void actionDelete(ItemDelta item) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void actionChangeAttribute(LinkDescription linkDescription,
-				String key, Object value) throws CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void actionChangeAttribute(UUID itemId, String key,
-				Object value) throws CadseException, CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void actionAddOperation(WLWCOperationImpl operation) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void actionAddLink(LinkDescription linkDescription)
-				throws CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public ItemDelta actionAddItem(ItemDescriptionRef itemDescriptionRef,
-				UUID parent, LinkType lt) throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void actionAddAttribute(LinkDescription linkDescription, String key,
-				Object value) throws CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void actionAddAttribute(UUID itemId, String key, Object value)
-				throws CadseException, CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void actionAdd(ItemDelta item) throws CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void removeLogicalWorkspaceTransactionListener(
-				LogicalWorkspaceTransactionListener listener) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public LogicalWorkspaceTransactionListener[] getLogicalWorkspaceTransactionListener() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void addLogicalWorkspaceTransactionListener(
-				LogicalWorkspaceTransactionListener listener) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setState(WSModelState state) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public List<Link> getUnresolvedLinks() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<Link> getUnresolvedLink(UUID id) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<Item> getUnresolvedItem() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public WSModelState getState() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Collection<Item> getItems() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<Item> getItems(ItemType it) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<Item> getItems(String it) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Collection<ItemType> getItemTypes() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemType getItemTypeByName(String shortName) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemType getItemType(UUID itemTypeId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Item getItemByShortName(ItemType type, String name) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Item getItem(Key key) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Item getItem(String uniqueName) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public int[] getCadseVersion() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CadseRuntime[] getCadseRuntime() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String[] getCadseName() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CadseDomain getCadseDomain() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean existsItem(Item item, String shortName)
-				throws CadseException {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean existsItem(Item item) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public LinkType createUnresolvedLinkType(String linkTypeName,
-				ItemType sourceType, ItemType destType) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean canDeleteLink(Link link) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean canDeleteInverseLink(Link link) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public void setAttribute(Item item, IAttributeType<?> key, Object value) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setAttribute(Item item, String key, Object value) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void rollback() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void removeListener(WorkspaceListener l) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void loadItems(Collection<URL> itemdescription)
-				throws CadseException, IOException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public ItemDelta loadItem(Item item) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta loadItem(UUID id, UUID type)
-				throws CadseException {
-			return new PrintItemDelta(id, type);
-		}
-
-		@Override
-		public ItemDelta loadItem(ItemDescriptionRef itemRef) throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void loadCadseModel(String qualifiedCadseModelName) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void load() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public boolean isUpdate() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean isModified() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean isCommitted() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public ContextVariable getOldContext() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ContextVariable getNewContext() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public LinkDelta getLink(Link link) throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Collection<ItemDelta> getItemOperations() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta getItemOperation(UUID id) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta getItem(Item item) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta getItem(UUID itemId, boolean showDeleteItem) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta getItem(UUID id) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <T> T getAttribute(Item source, String key, boolean ownerOnly) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <T> T getAttribute(Item source, IAttributeType<T> type,
-				boolean ownerOnly) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<WorkspaceListener> filter(int filters,
-				ImmutableWorkspaceDelta workspaceDelta) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public LogicalWorkspaceTransaction createTransaction() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public LinkDelta createLinkIfNeed(ItemDelta source, Item dest,
-				LinkType linkType) throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemType createItemType(ItemType itemTypeType,
-				CadseRuntime cadseName, ItemType superType, int intID,
-				UUID id, String shortName, String displayName,
-				boolean hasContent, boolean isAbstract, IItemManager manager) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta createItemIfNeed(ItemType itemType, Item parent,
-				LinkType partLinkType, String uniqueName, String shortName,
-				SetAttrVal<?>... attributes) throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta createItemIfNeed(String uniqueName, String shortname,
-				ItemType itemType, Item parent, LinkType partLinkType,
-				Object... attributes) throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta createItem(ItemType itemType, Item parent, LinkType lt,
-				UUID id, String uniqueName, String shortName)
-				throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta createItem(ItemType itemType, Item parent,
-				LinkType partLinkType) throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CadseRuntime createCadseRuntime(String name, UUID runtimeId,
-				UUID definitionId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Collection<Item> commit(boolean update, boolean forceToSave,
-				boolean forceLoad,
-				Collection<ProjectAssociation> projectAssociationSet)
-				throws CadseException, IOException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void commit() throws CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void clear() throws CadseException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void check_write() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void addListener(WorkspaceListener l, EventFilter eventFilter) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void addListener(WorkspaceListener l, int eventFilter) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public ContextVariable getContext() {
-			// TODO Auto-generated method stub
-			return null;
 		}
 
 		@Override
 		public void validateDeleteLink(LinkDelta link) throws CadseException {
 			// TODO Auto-generated method stub
 			
-		}
-
-		@Override
-		public NewContext[] getNewContextFrom(FilterContext context) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public ItemDelta createItem(NewContext c) throws CadseException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
+		}}
 
 	public static void main(String[] args) {
 		java.io.File dir = new java.io.File(args[0]);

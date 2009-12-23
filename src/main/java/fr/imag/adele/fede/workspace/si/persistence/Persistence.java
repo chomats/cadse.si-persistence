@@ -55,12 +55,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import adele.util.io.FileUtil;
-import fede.workspace.tool.migration.MigrationModel;
+import fr.imag.adele.cadse.as.platformide.IPlatformIDE;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseRuntime;
 import java.util.UUID;
-import fr.imag.adele.cadse.core.ContentItem;
+import fr.imag.adele.cadse.core.content.ContentItem;
 import fr.imag.adele.cadse.core.DerivedLink;
 import fr.imag.adele.cadse.core.DerivedLinkDescription;
 import fr.imag.adele.cadse.core.Item;
@@ -69,14 +69,14 @@ import fr.imag.adele.cadse.core.ItemDescriptionRef;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.Link;
 import fr.imag.adele.cadse.core.LinkDescription;
+import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.WSModelState;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
-import fr.imag.adele.cadse.core.util.Assert;
+import fr.imag.adele.cadse.util.Assert;
 import fr.imag.adele.fede.workspace.as.persistence.IPersistence;
-import fr.imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse;
 
 /**
  * @generated
@@ -87,7 +87,7 @@ public class Persistence implements IPersistence {
 	/**
 	 * @generated
 	 */
-	IPlatformEclipse				platformEclipse;
+	IPlatformIDE				platformIDE;
 
 	/**
 	 * The ws domain.
@@ -496,33 +496,33 @@ public class Persistence implements IPersistence {
 		return new PersistenceNew2009().load(location, workspaceCU, this);
 	}
 
-	/**
-	 * Migrate.
-	 *
-	 * @param workspaceLogique
-	 *            the workspace logique
-	 * @param items
-	 *            the items
-	 *
-	 * @return true, if successful
-	 */
-	private boolean migrate(LogicalWorkspace workspaceLogique, Map<UUID, ItemDescription> items) {
-		String migfile = System.getProperty("fr.imag.adele.cadseg.migfile");
-		if (migfile != null) {
-			long start = System.currentTimeMillis();
-			MigrationModel migrationModel = new MigrationModel();
-			int count = migrationModel.run(mLogger, workspaceLogique, items, new File(migfile), getCadsesName(),
-					getCadsesVersion());
-			Collection<ItemDescription> deleteItems = migrationModel.getDeleteItems();
-			for (ItemDescription delDesc : deleteItems) {
-				delete(delDesc);
-			}
-			mLogger.finest("Migrate " + count + " actions in " + (System.currentTimeMillis() - start) + " ms.");
-			return count != 0;
-		}
-		return false;
-
-	}
+//	/**
+//	 * Migrate.
+//	 *
+//	 * @param workspaceLogique
+//	 *            the workspace logique
+//	 * @param items
+//	 *            the items
+//	 *
+//	 * @return true, if successful
+//	 */
+//	private boolean migrate(LogicalWorkspace workspaceLogique, Map<UUID, ItemDescription> items) {
+//		String migfile = System.getProperty("fr.imag.adele.cadseg.migfile");
+//		if (migfile != null) {
+//			long start = System.currentTimeMillis();
+//			MigrationModel migrationModel = new MigrationModel();
+//			int count = migrationModel.run(mLogger, workspaceLogique, items, new File(migfile), getCadsesName(),
+//					getCadsesVersion());
+//			Collection<ItemDescription> deleteItems = migrationModel.getDeleteItems();
+//			for (ItemDescription delDesc : deleteItems) {
+//				delete(delDesc);
+//			}
+//			mLogger.finest("Migrate " + count + " actions in " + (System.currentTimeMillis() - start) + " ms.");
+//			return count != 0;
+//		}
+//		return false;
+//
+//	}
 
 	/**
 	 * Delete.
@@ -1381,7 +1381,7 @@ public class Persistence implements IPersistence {
 		}
 
 		UUID id = (UUID) input.readObject();
-		return new UUID(id);
+		return id;
 	}
 
 	/*
@@ -1504,15 +1504,15 @@ public class Persistence implements IPersistence {
 		output.append(" >\n");
 
 		// attributs
-		String[] keys = item.getAttributeKeys();
+		IAttributeType<?>[] keys = item.getLocalAllAttributeTypes();
 		Arrays.sort(keys);
-		for (String key : keys) {
+		for (IAttributeType<?> key : keys) {
 			// if (Persistence.WS_PRIVATE_VERSION.equals(key)) {
 			// continue;
 			// }
 
 			try {
-				XMLPersistance.writeXML(output, key, item.getAttributeH(key, false), "attribute", "  ");
+				XMLPersistance.writeXML(output, key.getName(), item.getAttributeOwner(key), "attribute", "  ");
 			} catch (IOException e) {
 				mLogger.log(Level.SEVERE,
 						"Cannot save the key : " + key + " class of value : " + item.getAttribute(key).getClass(), e);
@@ -1538,42 +1538,6 @@ public class Persistence implements IPersistence {
 			output.append("  </link>\n");
 		}
 
-		// dervivedlink
-		Set<DerivedLink> _derivedLinks = item.getDerivedLinks();
-		for (DerivedLink link : _derivedLinks) {
-			output.append("  <derived-link");
-			XMLPersistance.writeXML(output, "name", link.getLinkType().getName());
-			XMLPersistance.writeXML(output, "destination-id", link.getDestinationId().toString());
-			XMLPersistance.writeXMLOpt(output, "destination-qualified-name", link.getDestinationQualifiedName());
-			XMLPersistance.writeXMLOpt(output, "destination-name", link.getDestinationName());
-			XMLPersistance.writeXML(output, "destination-type", link.getDestinationType().getId().toString());
-
-			XMLPersistance.writeXML(output, "is-agregate", link.isAggregation());
-			XMLPersistance.writeXML(output, "is-require", link.isRequire());
-
-			XMLPersistance.writeXML(output, "origin-link-type", link.getDerivedType().getOriginLinkType()
-					.getName());
-			XMLPersistance.writeXML(output, "origin-link-type-source", link.getDerivedType().getOriginLinkType()
-					.getSource().getId().toString());
-			XMLPersistance.writeXML(output, "origin-link-type-destination", link.getDerivedType().getOriginLinkType()
-					.getDestination().getId().toString());
-			XMLPersistance.writeXML(output, "version", link.getVersion());
-			externalDerivedLinkWrite(output, link);
-			output.append(" />\n");
-
-		}
-
-		// Components
-		Set<Item> comps = item.getComponents();
-		for (Item link : comps) {
-			output.append("  <Component");
-			XMLPersistance.writeXML(output, "type", link.getType().getId().toString());
-			XMLPersistance.writeXML(output, "id", link.getId().toString());
-			XMLPersistance.writeXMLOpt(output, "name", link.getQualifiedName());
-			XMLPersistance.writeXMLOpt(output, "qualified-name", link.getName());
-			externalComponantsWrite(output, link);
-			output.append(" />\n");
-		}
 		output.append("</item>\n");
 	}
 
@@ -1643,39 +1607,19 @@ public class Persistence implements IPersistence {
 		// format (old place for info)
 
 		// attributs
-		String[] keys = item.getAttributeKeys();
-
-		Map<String, IAttributeType<?>> attributesDefinition = new HashMap<String, IAttributeType<?>>();
-		item.getType().getAllAttributeTypes(attributesDefinition, true);
+		IAttributeType<?>[] keys = item.getLocalAllAttributeTypes();
 		Arrays.sort(keys);
-		for (String key : keys) {
-			IAttributeType<?> attDef = attributesDefinition.get(key);
-			if (attDef == null) {
-				mLogger.finest("Cannot found attribute definition " + key + " in type "
-						+ item.getType().getQualifiedDisplayName());
-
-				Object value = item.getAttributeH(key, false);
-				if (value == null) {
-					continue;
-				}
-				writeString(output, key);
-				try {
-					output.writeObject(value);
-				} catch (IOException e) {
-					mLogger.log(Level.SEVERE, "Cannot save item " + item.getId() + " error when write the value of the key '" + key
-							+ "', class of value is " + item.getAttribute(key).getClass(), e);
-					throw e;
-				}
-			} else {
-				if (attDef.isTransient()) {
+		for (IAttributeType<?> key : keys) {
+			{
+				if (key.isTransient()) {
 					continue;
 				}
 
-				Object value = item.getAttributeOwner(attDef);
+				Object value = item.getAttributeOwner(key);
 				if (value == null) {
 					continue;
 				}
-				writeString(output, key);
+				writeString(output, key.getId().toString());
 				try {
 					output.writeObject(value);
 				} catch (IOException e) {
@@ -1707,34 +1651,34 @@ public class Persistence implements IPersistence {
 		}
 		writeString(output, null);
 
-		// dervivedlink
-		Set<DerivedLink> _derivedLinks = item.getDerivedLinks();
-		for (DerivedLink link : _derivedLinks) {
-			writeString(output, link.getLinkType().getName());
-			writeUUID(output, link.getDestination().getId());
-			writeString(output, link.getDestination().getQualifiedName());
-			writeString(output, link.getDestination().getName());
-			writeUUID(output, link.getDestination().getType().getId());
-			writeString(output, null); // do not remove this line or change the
-			// format (old place for info)
-			output.writeBoolean(link.isAggregation());
-			output.writeBoolean(link.isRequire());
-			writeString(output, link.getDerivedType().getOriginLinkType().getName());
-			writeUUID(output, link.getDerivedType().getOriginLinkType().getSource().getId());
-			writeUUID(output, link.getDerivedType().getOriginLinkType().getDestination().getId());
-			output.writeInt(link.getVersion());
-		}
-		writeString(output, null);
-
-		// Components
-		Set<Item> comps = item.getComponents();
-		output.write(comps.size());
-		for (Item link : comps) {
-			writeUUID(output, link.getId());
-			writeString(output, link.getQualifiedName());
-			writeString(output, link.getName());
-			writeUUID(output, link.getType().getId());
-		}
+//		// dervivedlink
+//		Set<DerivedLink> _derivedLinks = item.getDerivedLinks();
+//		for (DerivedLink link : _derivedLinks) {
+//			writeString(output, link.getLinkType().getName());
+//			writeUUID(output, link.getDestination().getId());
+//			writeString(output, link.getDestination().getQualifiedName());
+//			writeString(output, link.getDestination().getName());
+//			writeUUID(output, link.getDestination().getType().getId());
+//			writeString(output, null); // do not remove this line or change the
+//			// format (old place for info)
+//			output.writeBoolean(link.isAggregation());
+//			output.writeBoolean(link.isRequire());
+//			writeString(output, link.getDerivedType().getOriginLinkType().getName());
+//			writeUUID(output, link.getDerivedType().getOriginLinkType().getSource().getId());
+//			writeUUID(output, link.getDerivedType().getOriginLinkType().getDestination().getId());
+//			output.writeInt(link.getVersion());
+//		}
+//		writeString(output, null);
+//
+//		// Components
+//		Set<Item> comps = item.getComponents();
+//		output.write(comps.size());
+//		for (Item link : comps) {
+//			writeUUID(output, link.getId());
+//			writeString(output, link.getQualifiedName());
+//			writeString(output, link.getName());
+//			writeUUID(output, link.getType().getId());
+//		}
 
 	}
 
@@ -1803,34 +1747,34 @@ public class Persistence implements IPersistence {
 		}
 		writeString(output, null);
 
-		// dervivedlink
-		Set<DerivedLinkDescription> _derivedLinks = item.getDerived();
-		for (DerivedLinkDescription link : _derivedLinks) {
-			writeString(output, link.getType());
-			writeUUID(output, link.getDestination().getId());
-			writeString(output, link.getDestination().getQualifiedName());
-			writeString(output, link.getDestination().getName());
-			writeUUID(output, link.getDestination().getType());
-			writeString(output, ""); // do not remove this line or change the
-			// format (old place for info)
-			output.writeBoolean(link.isAggregation());
-			output.writeBoolean(link.isRequire());
-			writeString(output, link.getOriginLinkTypeID());
-			writeUUID(output, link.getOriginLinkSourceTypeID());
-			writeUUID(output, link.getOriginLinkDestinationTypeID());
-			output.write(link.getVersion());
-		}
-		writeString(output, null);
-
-		// Components
-		Set<ItemDescriptionRef> comps = item.getComponents();
-		output.write(comps.size());
-		for (ItemDescriptionRef link : comps) {
-			writeUUID(output, link.getId());
-			writeString(output, link.getQualifiedName());
-			writeString(output, link.getName());
-			writeUUID(output, link.getType());
-		}
+//		// dervivedlink
+//		Set<DerivedLinkDescription> _derivedLinks = item.getDerived();
+//		for (DerivedLinkDescription link : _derivedLinks) {
+//			writeString(output, link.getType());
+//			writeUUID(output, link.getDestination().getId());
+//			writeString(output, link.getDestination().getQualifiedName());
+//			writeString(output, link.getDestination().getName());
+//			writeUUID(output, link.getDestination().getType());
+//			writeString(output, ""); // do not remove this line or change the
+//			// format (old place for info)
+//			output.writeBoolean(link.isAggregation());
+//			output.writeBoolean(link.isRequire());
+//			writeString(output, link.getOriginLinkTypeID());
+//			writeUUID(output, link.getOriginLinkSourceTypeID());
+//			writeUUID(output, link.getOriginLinkDestinationTypeID());
+//			output.write(link.getVersion());
+//		}
+//		writeString(output, null);
+//
+//		// Components
+//		Set<ItemDescriptionRef> comps = item.getComponents();
+//		output.write(comps.size());
+//		for (ItemDescriptionRef link : comps) {
+//			writeUUID(output, link.getId());
+//			writeString(output, link.getQualifiedName());
+//			writeString(output, link.getName());
+//			writeUUID(output, link.getType());
+//		}
 
 	}
 
@@ -1988,7 +1932,7 @@ public class Persistence implements IPersistence {
 
 		int version = input.readInt();
 		if (version == 6) {
-			return readSerHeader_6(input);
+			return readSerHeader_6(mig, input);
 		}
 
 		UUID id = (UUID) input.readObject();
@@ -1996,8 +1940,9 @@ public class Persistence implements IPersistence {
 		String longname = (String) input.readObject();
 		String shortname = (String) input.readObject();
 		UUID it = mig.getOrCreateITID(type);
-
-		ItemDescriptionRef ref = new ItemDescriptionRef(new UUID(id), it, longname, shortname);
+		ItemType itObject = mig.findTypeFrom(it);
+		
+		ItemDescriptionRef ref = new ItemDescriptionRef(id, itObject, longname, shortname);
 		return ref;
 	}
 
@@ -2014,7 +1959,7 @@ public class Persistence implements IPersistence {
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
 	 */
-	public static ItemDescriptionRef readSerHeader_6(ObjectInput input) throws IOException, ClassNotFoundException {
+	public static ItemDescriptionRef readSerHeader_6(IMigrationFormat mig, ObjectInput input) throws IOException, ClassNotFoundException {
 		// version 4
 
 		/* int version = */input.readInt(); /* == 6 */
@@ -2023,8 +1968,9 @@ public class Persistence implements IPersistence {
 		UUID type = (UUID) input.readObject();
 		String longname = (String) input.readObject();
 		String shortname = (String) input.readObject();
-
-		ItemDescriptionRef ref = new ItemDescriptionRef(id, type, longname, shortname);
+		ItemType itObject = mig.findTypeFrom(type);
+		
+		ItemDescriptionRef ref = new ItemDescriptionRef(id, itObject, longname, shortname);
 		return ref;
 	}
 
@@ -2059,14 +2005,15 @@ public class Persistence implements IPersistence {
 		if (it == null) {
 			return null;
 		}
-
+		ItemType itObject = mig.findTypeFrom(it);
+		
 		// special value
 		boolean readOnly = input.readBoolean();
 		boolean isOpen = input.readBoolean();
 		boolean isValid = input.readBoolean();
 		String info = (String) input.readObject();
 
-		ItemDescription desc = new ItemDescription(new UUID(id), it);
+		ItemDescription desc = new ItemDescription(id, itObject);
 		desc.setValid(isValid);
 		desc.setReadOnly(readOnly);
 		desc.setUniqueName(longname);
@@ -2080,8 +2027,10 @@ public class Persistence implements IPersistence {
 			}
 			try {
 				Object value = input.readObject();
-
-				desc.getAttributes().put(key, value);
+				IAttributeType<?> att = mig.findAttributeFrom(itObject, key);
+				if (att == null) continue;
+				
+				desc.getAttributes().put(att, value);
 			} catch (ClassNotFoundException e) {
 				mLogger.log(Level.SEVERE, "Can't read the value for " + key, e);
 			} catch (IOException e) {
@@ -2107,61 +2056,66 @@ public class Persistence implements IPersistence {
 			String destTypeName = (String) input.readObject();
 			String link_info = (String) input.readObject();
 			UUID destTypeID = mig.getOrCreateITID(destTypeName);
-
-			LinkDescription ldesc = new LinkDescription(desc, linkType, new ItemDescriptionRef(new UUID(destId),
-					destTypeID));
+			ItemType destType = mig.findTypeFrom(destTypeID);
+			if (destType == null) continue;
+			
+			LinkType att = mig.findlinkTypeFrom(itObject, linkType);
+			if (att == null) continue;
+			
+			LinkDescription ldesc = new LinkDescription(desc, att, new ItemDescriptionRef(destId,
+					destType));
 			ldesc.getDestination().setUniqueName(destLongName);
 			ldesc.getDestination().setShortname(destShortName);
 		}
 
-		// dervivedlink
-		while (true) {
-			String linkType = (String) input.readObject();
-			if (linkType == null) {
-				break;
-			}
-			UUID destId = (UUID) input.readObject();
-			String destUniqueName = (String) input.readObject();
-			String destShortName = (String) input.readObject();
-			String destTypeName = (String) input.readObject();
-			UUID destTypeID = mig.getOrCreateITID(destTypeName);
-			String link_info = (String) input.readObject();
-
-			boolean isAggregation = input.readBoolean();
-			boolean isRequire = input.readBoolean();
-			String originLinkTypeID = (String) input.readObject();
-			String originLinkSourceTypeID = (String) input.readObject();
-			String originLinkDestinationTypeID = (String) input.readObject();
-			UUID uuidOriginLinkDestinationTypeID = mig.getOrCreateITID(originLinkDestinationTypeID);
-			UUID uuidOriginLinkSourceTypeID = mig.getOrCreateITID(originLinkSourceTypeID);
-			String other = (String) input.readObject();
-			int version = 0;
-			try {
-				version = Integer.parseInt(other);
-			} catch (NumberFormatException e) {
-				version = 0;
-			}
-			ItemDescriptionRef dest = new ItemDescriptionRef(new UUID(destId), destTypeID, destUniqueName,
-					destShortName);
-			DerivedLinkDescription derivedLinkDescription = new DerivedLinkDescription(desc, linkType, dest,
-					isAggregation, isRequire, link_info, originLinkTypeID, uuidOriginLinkSourceTypeID,
-					uuidOriginLinkDestinationTypeID, version);
-			desc.addDerivedLink(derivedLinkDescription);
-		}
-		// Components
-		while (true) {
-			UUID compId = (UUID) input.readObject();
-			if (compId == null) {
-				break;
-			}
-			String compUniqueName = (String) input.readObject();
-			String compShortName = (String) input.readObject();
-			String compTypeName = (String) input.readObject();
-			UUID uuidCompTypeName = mig.getOrCreateITID(compTypeName);
-
-			desc.addComponantsLink(new ItemDescriptionRef(new UUID(compId), uuidCompTypeName, compUniqueName,
-					compShortName));
-		}
+//		// dervivedlink
+//		while (true) {
+//			String linkType = (String) input.readObject();
+//			if (linkType == null) {
+//				break;
+//			}
+//			UUID destId = (UUID) input.readObject();
+//			String destUniqueName = (String) input.readObject();
+//			String destShortName = (String) input.readObject();
+//			String destTypeName = (String) input.readObject();
+//			UUID destTypeID = mig.getOrCreateITID(destTypeName);
+//			String link_info = (String) input.readObject();
+//
+//			boolean isAggregation = input.readBoolean();
+//			boolean isRequire = input.readBoolean();
+//			String originLinkTypeID = (String) input.readObject();
+//			String originLinkSourceTypeID = (String) input.readObject();
+//			String originLinkDestinationTypeID = (String) input.readObject();
+//			UUID uuidOriginLinkDestinationTypeID = mig.getOrCreateITID(originLinkDestinationTypeID);
+//			UUID uuidOriginLinkSourceTypeID = mig.getOrCreateITID(originLinkSourceTypeID);
+//			String other = (String) input.readObject();
+//			int version = 0;
+//			try {
+//				version = Integer.parseInt(other);
+//			} catch (NumberFormatException e) {
+//				version = 0;
+//			}
+//			ItemDescriptionRef dest = new ItemDescriptionRef(new UUID(destId), destTypeID, destUniqueName,
+//					destShortName);
+//			DerivedLinkDescription derivedLinkDescription = new DerivedLinkDescription(desc, linkType, dest,
+//					isAggregation, isRequire, link_info, originLinkTypeID, uuidOriginLinkSourceTypeID,
+//					uuidOriginLinkDestinationTypeID, version);
+//			desc.addDerivedLink(derivedLinkDescription);
+//		}
+//		// Components
+//		while (true) {
+//			UUID compId = (UUID) input.readObject();
+//			if (compId == null) {
+//				break;
+//			}
+//			String compUniqueName = (String) input.readObject();
+//			String compShortName = (String) input.readObject();
+//			String compTypeName = (String) input.readObject();
+//			UUID uuidCompTypeName = mig.getOrCreateITID(compTypeName);
+//
+//			desc.addComponantsLink(new ItemDescriptionRef(new UUID(compId), uuidCompTypeName, compUniqueName,
+//					compShortName));
+//		}
 
 		// CadseCore.getWorkspaceDomain().endReadItemDescription(desc, input);
 		return desc;
@@ -2182,7 +2136,7 @@ public class Persistence implements IPersistence {
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
 	 */
-	public static ItemDescription readSer_6(LogicalWorkspace wl, ObjectInputStream input) throws IOException,
+	public static ItemDescription readSer_6(IMigrationFormat mig, ObjectInputStream input) throws IOException,
 			ClassNotFoundException {
 		// version 6
 
@@ -2190,7 +2144,6 @@ public class Persistence implements IPersistence {
 
 		UUID id = readUUID(input);
 		UUID type = readUUID(input);
-		ItemType it = wl.getItemType(type);
 		String longname = readString(input);
 		String shortname = readString(input);
 
@@ -2200,7 +2153,8 @@ public class Persistence implements IPersistence {
 		boolean isValid = input.readBoolean();
 		String info = readString(input);
 
-		ItemDescription desc = new ItemDescription(id, type);
+		ItemType _it = mig.findTypeFrom(type);
+		ItemDescription desc = new ItemDescription(id, _it);
 		desc.setValid(isValid);
 		desc.setReadOnly(readOnly);
 		desc.setUniqueName(longname);
@@ -2212,13 +2166,14 @@ public class Persistence implements IPersistence {
 			if (key == null) {
 				break;
 			}
-			IAttributeType<?> att = it == null ? null : it.getAttributeType(key);
+			IAttributeType<?> att = mig.findAttributeFrom(_it, key);
 			if (att != null && att.getAttributeType() != null) {
 				input.addClass(att.getAttributeType());
 			}
 			try {
 				Object value = input.readObject();
-				desc.getAttributes().put(key, value);
+				if (att == null) continue;
+				desc.getAttributes().put(att, value);
 			} catch (ClassNotFoundException e) {
 				mLogger.log(Level.SEVERE, "Can't read the value for " + key, e);
 			} catch (IOException e) {
@@ -2248,49 +2203,55 @@ public class Persistence implements IPersistence {
 			String link_info = readString(input);
 
 			int version = input.readInt();
+			
+			ItemType destType = mig.findTypeFrom(destTypeName);
+			if (destType == null) continue;
+			
+			LinkType att = mig.findlinkTypeFrom(_it, linkType);
+			if (att == null) continue;
 
-			LinkDescription ldesc = new LinkDescription(desc, linkType, new ItemDescriptionRef(destId, destTypeName));
+			LinkDescription ldesc = new LinkDescription(desc, att, new ItemDescriptionRef(destId, destType));
 			ldesc.getDestination().setUniqueName(destLongName);
 			ldesc.getDestination().setShortname(destShortName);
 			ldesc.setVersion(version);
 		}
 
-		// dervivedlink
-		while (true) {
-			String linkType = readString(input);
-			if (linkType == null) {
-				break;
-			}
-			UUID destId = readUUID(input);
-			String destUniqueName = readString(input);
-			String destShortName = readString(input);
-			UUID destTypeName = readUUID(input);
-			String link_info = readString(input);
-
-			boolean isAggregation = input.readBoolean();
-			boolean isRequire = input.readBoolean();
-			String originLinkTypeID = readString(input);
-			UUID originLinkSourceTypeID = readUUID(input);
-			UUID originLinkDestinationTypeID = readUUID(input);
-			int version = input.readInt();
-
-			ItemDescriptionRef dest = new ItemDescriptionRef(destId, destTypeName, destUniqueName, destShortName);
-			DerivedLinkDescription derivedLinkDescription = new DerivedLinkDescription(desc, linkType, dest,
-					isAggregation, isRequire, link_info, originLinkTypeID, originLinkSourceTypeID,
-					originLinkDestinationTypeID, version);
-			desc.addDerivedLink(derivedLinkDescription);
-		}
-		int size = input.read();
-		for (int i = 0; i < size; i++) {
-			UUID compId = readUUID(input);
-			String compUniqueName = readString(input);
-			;
-			String compShortName = readString(input);
-			;
-			UUID compTypeName = readUUID(input);
-
-			desc.addComponantsLink(new ItemDescriptionRef(compId, compTypeName, compUniqueName, compShortName));
-		}
+//		// dervivedlink
+//		while (true) {
+//			String linkType = readString(input);
+//			if (linkType == null) {
+//				break;
+//			}
+//			UUID destId = readUUID(input);
+//			String destUniqueName = readString(input);
+//			String destShortName = readString(input);
+//			UUID destTypeName = readUUID(input);
+//			String link_info = readString(input);
+//
+//			boolean isAggregation = input.readBoolean();
+//			boolean isRequire = input.readBoolean();
+//			String originLinkTypeID = readString(input);
+//			UUID originLinkSourceTypeID = readUUID(input);
+//			UUID originLinkDestinationTypeID = readUUID(input);
+//			int version = input.readInt();
+//
+//			ItemDescriptionRef dest = new ItemDescriptionRef(destId, destTypeName, destUniqueName, destShortName);
+//			DerivedLinkDescription derivedLinkDescription = new DerivedLinkDescription(desc, linkType, dest,
+//					isAggregation, isRequire, link_info, originLinkTypeID, originLinkSourceTypeID,
+//					originLinkDestinationTypeID, version);
+//			desc.addDerivedLink(derivedLinkDescription);
+//		}
+//		int size = input.read();
+//		for (int i = 0; i < size; i++) {
+//			UUID compId = readUUID(input);
+//			String compUniqueName = readString(input);
+//			;
+//			String compShortName = readString(input);
+//			;
+//			UUID compTypeName = readUUID(input);
+//
+//			desc.addComponantsLink(new ItemDescriptionRef(compId, compTypeName, compUniqueName, compShortName));
+//		}
 
 		// CadseCore.getWorkspaceDomain().endReadItemDescription(desc, input);
 		return desc;
@@ -2459,7 +2420,7 @@ public class Persistence implements IPersistence {
 			int version = input.readInt();
 			ItemDescription desc = null;
 			if (version == VERSION_6) {
-				desc = readSer_6(wl, input);
+				desc = readSer_6(mig, input);
 
 			} else if (version == VERSION_4) {
 				// desc = readSer_4(mig, md5, input);
@@ -2479,12 +2440,12 @@ public class Persistence implements IPersistence {
 			}
 		}
 	}
-	private static void moveAttribute(ItemDescription desc, String oldKey, String newKey) {
-		Object value = desc.getAttributes().remove(oldKey);
-		if (value != null) {
-			desc.addAttribute(newKey, value);
-		}
-	}
+//	private static void moveAttribute(ItemDescription desc, String oldKey, String newKey) {
+//		Object value = desc.getAttributes().remove(oldKey);
+//		if (value != null) {
+//			desc.addAttribute(newKey, value);
+//		}
+//	}
 
 	/**
 	 * Read ser h.
@@ -2663,8 +2624,8 @@ public class Persistence implements IPersistence {
 		return this.workspaceCU;
 	}
 
-	public IPlatformEclipse getPlatformEclipse() {
-		return platformEclipse;
+	public IPlatformIDE getPlatformIDE() {
+		return platformIDE;
 	}
 
 	public void setLocation(File location) {
@@ -2747,6 +2708,56 @@ public class Persistence implements IPersistence {
 		} finally {
 		//	theCurrentWD.endOperation();
 		}
+	}
+
+	@Override
+	public void deleteAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean existPersistence() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public CadseRuntime[] getRunningCadses() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String[] getRunningCadsesName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int[] getRunningCadsesVersion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Item[] load(LogicalWorkspace wl, boolean failthrow)
+			throws CadseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Item[] loadFromPersistence(LogicalWorkspace lw, List<URL> url)
+			throws CadseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void saveSer(Item item, File fileSer) throws CadseException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

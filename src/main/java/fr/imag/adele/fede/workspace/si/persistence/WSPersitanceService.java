@@ -72,7 +72,7 @@ public class WSPersitanceService extends Thread {
 	public void run() {
 	//	EclipsePojo.waitIsStarted();
 
-		p.setLocation(p.getPlatformEclipse().getLocation(true));
+		p.setLocation(p.getPlatformIDE().getLocation(true));
 		// p.getWorspaceDomain().addListener(this);
 		while (started) {
 			Item item;

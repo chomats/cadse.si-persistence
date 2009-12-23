@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
+import fr.imag.adele.cadse.as.platformide.IPlatformIDE;
 import fr.imag.adele.cadse.core.CadseException;
 import java.util.UUID;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
@@ -50,7 +51,7 @@ import fr.imag.adele.cadse.core.enumdef.TWEvol;
 import fr.imag.adele.cadse.core.enumdef.TWUpdateKind;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.ui.EPosLabel;
-import fr.imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse;
+import fede.workspace.domain.CompactUUID;
 
 /**
  * @generated
@@ -62,7 +63,7 @@ public class PersistenceNew2009 {
 	/**
 	 * @generated
 	 */
-	IPlatformEclipse				platformEclipse;
+	IPlatformIDE				platformEclipse;
 
 	/**
 	 * The ws domain.
@@ -390,7 +391,7 @@ public class PersistenceNew2009 {
 		boolean isValid = input.readBoolean();
 		input.readObject(); // remove info attribute
 
-		ItemDelta desc = copy.loadItem(new UUID(id), it);
+		ItemDelta desc = copy.loadItem(id, it);
 		desc.setValid(isValid, true);
 		desc.setReadOnly(readOnly, true);
 		desc.setQualifiedName(longname, true);
@@ -431,7 +432,7 @@ public class PersistenceNew2009 {
 			String link_info = (String) input.readObject();
 			UUID destTypeID = mig.getOrCreateITID(destTypeName);
 
-			ItemDelta destItem = copy.loadItem(new UUID(destId), destTypeID);
+			ItemDelta destItem = copy.loadItem(destId, destTypeID);
 			destItem.setUniqueName(destLongName, true);
 			destItem.setShortName(destShortName, true);
 
@@ -467,7 +468,7 @@ public class PersistenceNew2009 {
 				version = 0;
 			}
 
-			ItemDelta dest = copy.loadItem(new UUID(destId), destTypeID);
+			ItemDelta dest = copy.loadItem(destId, destTypeID);
 			dest.setShortName(destShortName, true);
 			dest.setUniqueName(destUniqueName, true);
 
@@ -485,7 +486,7 @@ public class PersistenceNew2009 {
 			String compTypeName = (String) input.readObject();
 			UUID uuidCompTypeName = mig.getOrCreateITID(compTypeName);
 
-			ItemDelta componentItem = copy.loadItem(new UUID(compId), uuidCompTypeName);
+			ItemDelta componentItem = copy.loadItem(compId, uuidCompTypeName);
 			componentItem.setShortName(compShortName, true);
 			componentItem.setUniqueName(compUniqueName, true);
 
@@ -551,9 +552,9 @@ public class PersistenceNew2009 {
 			}
 			try {
 				Object value = input.readObject();
-				if (value instanceof fede.workspace.domain.UUID) {
-					value = new UUID(((fede.workspace.domain.UUID)value).getMostSignificantBits(),
-							((fede.workspace.domain.UUID)value).getLeastSignificantBits());
+				if (value instanceof fede.workspace.domain.CompactUUID) {
+					value = new UUID(((fede.workspace.domain.CompactUUID)value).getMostSignificantBits(),
+							((fede.workspace.domain.CompactUUID)value).getLeastSignificantBits());
 				}
 				else if (value instanceof fede.workspace.domain.root.type.TWCommitKind) {
 					value = TWCommitKind.valueOf(value.toString());

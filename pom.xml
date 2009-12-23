@@ -40,6 +40,36 @@
             <artifactId>cu.core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>util.io</artifactId>
+        	<version>${project.version}</version>
+        </dependency>        
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>as.persistence</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>compatility</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse</groupId>
+        	<artifactId>org.eclipse.core.jobs</artifactId>
+        	<version>3.4.100.v20090429-1800</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse</groupId>
+        	<artifactId>org.eclipse.equinox.common</artifactId>
+        	<version>3.5.1.R35x_v20090807-1100</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse</groupId>
+        	<artifactId>org.eclipse.core.resources</artifactId>
+        	<version>3.5.1.R35x_v20090826-0451</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

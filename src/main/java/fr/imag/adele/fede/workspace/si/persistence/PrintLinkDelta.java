@@ -21,12 +21,12 @@ import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 
 public class PrintLinkDelta implements LinkDelta {
 
-	private String _linkType;
+	private LinkType _linkType;
 	private ItemDelta _destItem;
 	private String _info;
 	private int _version;
 
-	public PrintLinkDelta(String linkType, ItemDelta destItem) {
+	public PrintLinkDelta(LinkType linkType, ItemDelta destItem) {
 		_linkType = linkType;
 		_destItem = destItem;
 	}
@@ -316,13 +316,6 @@ public class PrintLinkDelta implements LinkDelta {
 	}
 
 	@Override
-	public void setAttribute(String key, Object v, Object oldValue,
-			boolean loaded) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setHidden(boolean hidden) {
 		// TODO Auto-generated method stub
 
@@ -390,17 +383,6 @@ public class PrintLinkDelta implements LinkDelta {
 
 	}
 
-	@Override
-	public <T> T getAttribute(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> T getAttribute(String key, boolean returnDefault) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public CreateOperation getCreateOperation() {
@@ -416,12 +398,6 @@ public class PrintLinkDelta implements LinkDelta {
 
 	@Override
 	public Collection<SetAttributeOperation> getSetAttributeOperation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public SetAttributeOperation getSetAttributeOperation(String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -452,11 +428,6 @@ public class PrintLinkDelta implements LinkDelta {
 		return null;
 	}
 
-	@Override
-	public WLWCOperation getParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public OperationType getParentType() {
@@ -541,6 +512,104 @@ public class PrintLinkDelta implements LinkDelta {
 			Object value) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void setAttribute(IAttributeType<?> key, Object v, Object oldValue,
+			boolean loaded) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setObjectID(int linkId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public UUID getDestinationCadseId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getLinkAttributeOwner(IAttributeType<T> attDef) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UUID getSourceCadseId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isInterCadseLink() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public UUID getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getObjectId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setUUID(long uuidMsb, long uuidLsb) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setUUID(UUID uuid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T> T adapt(Class<T> clazz) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getAttribute(IAttributeType<T> key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getAttribute(IAttributeType<T> key, boolean returnDefault) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getAttributeWithDefaultValue(IAttributeType<T> att,
+			T defaultValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SetAttributeOperation getSetAttributeOperation(IAttributeType<?> key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public WLWCOperation getParentOperDelta() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
