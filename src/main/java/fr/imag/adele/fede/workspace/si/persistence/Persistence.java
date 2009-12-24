@@ -61,6 +61,10 @@ import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseRuntime;
 import java.util.UUID;
 import fr.imag.adele.cadse.core.content.ContentItem;
+import fr.imag.adele.cadse.core.enumdef.TWCommitKind;
+import fr.imag.adele.cadse.core.enumdef.TWDestEvol;
+import fr.imag.adele.cadse.core.enumdef.TWEvol;
+import fr.imag.adele.cadse.core.enumdef.TWUpdateKind;
 import fr.imag.adele.cadse.core.DerivedLink;
 import fr.imag.adele.cadse.core.DerivedLinkDescription;
 import fr.imag.adele.cadse.core.Item;
@@ -74,7 +78,9 @@ import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.WSModelState;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
+import fr.imag.adele.cadse.core.transaction.delta.LinkDelta;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
+import fr.imag.adele.cadse.core.ui.EPosLabel;
 import fr.imag.adele.cadse.util.Assert;
 import fr.imag.adele.fede.workspace.as.persistence.IPersistence;
 
@@ -595,7 +601,7 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	void loadItemDescriptionFromRepo(IMigrationFormat mig, File location_melusine, IProgressMonitor monitor,
-			Map<UUID, ItemDescription> items) throws IOException {
+			Map<UUID, ItemDelta> items) throws IOException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
@@ -626,7 +632,8 @@ public class Persistence implements IPersistence {
 			}
 			if (nameFile.endsWith(".ser")) {
 				try {
-					ItemDescription itemLoaded = loadItem(mig, file, false);
+					LogicalWorkspaceTransaction copy= null;
+					ItemDelta itemLoaded = loadItem(copy, mig, file, false);
 					if (itemLoaded == null) {
 						delete(file);
 						mLogger.info("Delete file " + file.getName());
@@ -635,7 +642,7 @@ public class Persistence implements IPersistence {
 					items.put(itemLoaded.getId(), itemLoaded);
 					monitor.subTask(itemLoaded.getQualifiedName());
 				} catch (Throwable e) {
-					e.printStackTrace();
+					mLogger.log(Level.SEVERE, "load "+nameFile, e);
 					// nameFile.delete();
 				}
 				continue;
@@ -643,6 +650,50 @@ public class Persistence implements IPersistence {
 		}
 	}
 
+	public ItemDelta loadFromPersistence(LogicalWorkspaceTransaction wl, URL url) throws CadseException {
+		ObjectInputStream input = null;
+		try {
+			byte[] data = MD5.read(url);
+		//	byte[] md5 = MD5.getMD5(data);
+			IMigrationFormat mig = new MigrationFormat(wl, mLogger);
+			ItemDelta item = readFromByteArray(wl, mig, data);
+			return item;
+		} catch (ClassNotFoundException e) {
+			throw new CadseException(e.getMessage(),e);
+		} catch (IOException e) {
+			throw new CadseException(e.getMessage(),e);
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					mLogger.log(Level.SEVERE, "load", e);
+				}
+			}
+		}
+	}
+
+	public ItemDelta loadFromPersistence(LogicalWorkspaceTransaction wl, InputStream stream) throws CadseException {
+		ObjectInputStream input = null;
+		try {
+			byte[] data = MD5.read(stream);
+			IMigrationFormat mig = new MigrationFormat(wl, mLogger);
+			ItemDelta item = readFromByteArray(wl, mig, data);
+			return item;
+		} catch (ClassNotFoundException e) {
+			throw new CadseException(e.getMessage(),e);
+		} catch (IOException e) {
+			throw new CadseException(e.getMessage(),e);
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					mLogger.log(Level.SEVERE, "load", e);
+				}
+			}
+		}
+	}
 	/**
 	 * Load item.
 	 *
@@ -658,14 +709,13 @@ public class Persistence implements IPersistence {
 	 * @throws Throwable
 	 *             the throwable
 	 */
-	private ItemDescription loadItem(IMigrationFormat mig, File fileItem, boolean delete) throws Throwable {
+	private ItemDelta loadItem(LogicalWorkspaceTransaction copy, IMigrationFormat mig, File fileItem, boolean delete) throws Throwable {
 		if (!fileItem.exists()) {
 			throw new IOException("Can't find the file : " + fileItem.toString());
 		}
 		try {
 			byte[] data = MD5.read(fileItem);
-			ItemDescription item = byteArrayToItemDescription(mig, data);
-			return item;
+			return byteArrayToItemDescription(copy, mig, data);
 		} catch (FileNotFoundException e) {
 
 			throw e;
@@ -809,7 +859,7 @@ public class Persistence implements IPersistence {
 	 * @throws Throwable
 	 *             the throwable
 	 */
-	private void importItemRead(LogicalWorkspace ws, Item item, File repository, IProgressMonitor monitor,
+	private void importItemRead(LogicalWorkspaceTransaction ws, Item item, File repository, IProgressMonitor monitor,
 			List<Item> itemImported, IMigrationFormat mig) throws Throwable {
 
 		File def = new File(repository, ".melusine");
@@ -820,7 +870,7 @@ public class Persistence implements IPersistence {
 			System.out.println("Allready exits " + item.getId());
 			return;
 		}
-		ItemDescription desc = loadItem(mig, itemfile, false);
+		ItemDelta desc = loadItem(ws, mig, itemfile, false);
 		// Item parent = attachedLink == null? null:attachedLink.getSource();
 		// LinkType parentLT = attachedLink == null?
 		// null:attachedLink.getType();
@@ -1121,75 +1171,18 @@ public class Persistence implements IPersistence {
 	 * @throws CadseException
 	 *             the melusine exception
 	 */
-	private ItemDescription byteArrayToItemDescription(IMigrationFormat mig, byte[] data) throws IOException,
+	private ItemDelta byteArrayToItemDescription(LogicalWorkspaceTransaction copy, IMigrationFormat mig, byte[] data) throws IOException,
 			ClassNotFoundException, CadseException {
 		boolean oldLock = lock;
 		try {
 			lock = true;
 			setEnableEvent(false);
 			// byte[] md5 = MD5.getMD5(data);
-			ItemDescription desc = readFromByteArray(this.workspaceCU.getLogicalWorkspace(), mig, data);
-
-			return desc;
+			return readFromByteArray(copy, mig, data);
 		} finally {
 
 			setEnableEvent(true);
 			lock = oldLock;
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see fede.workspace.role.persistance.IPersistance#disablePersistance()
-	 */
-	public void disablePersistance() {
-		if (!enablePersistance) {
-			return;
-		}
-		synchronized (threadSave) {
-			saveAll();
-			mLogger.info("DISABLE");
-			enablePersistance = false;
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see fede.workspace.role.persistance.IPersistance#reload()
-	 */
-	public boolean reload() {
-		LogicalWorkspace theCurrentModel = workspaceCU.getLogicalWorkspace();
-		if (theCurrentModel != null) {
-			theCurrentModel.setState(WSModelState.RELOAD);
-		}
-		// workspaceCU.reset();
-
-		if (load()) {
-			enablePersistance = true;
-			theCurrentModel = workspaceCU.getLogicalWorkspace();
-			if (theCurrentModel != null) {
-				theCurrentModel.setState(WSModelState.RUN);
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see fede.workspace.role.persistance.IPersistance#enablePersistance()
-	 */
-	public void enablePersistance() {
-		if (enablePersistance) {
-			return;
-		}
-		synchronized (threadSave) {
-			mLogger.info("ENABLE");
-			enablePersistance = true;
-			saveAll();
 		}
 	}
 
@@ -1990,9 +1983,12 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
+	 * @throws CadseException 
+	 * @throws CadseException
+	 * @throws CoreException
 	 */
-	public static ItemDescription readSer_5(IMigrationFormat mig, ObjectInput input) throws IOException,
-			ClassNotFoundException {
+	public static ItemDelta readSer_5(LogicalWorkspaceTransaction copy, IMigrationFormat mig, ObjectInput input) throws IOException,
+			ClassNotFoundException, CadseException {
 		// version 5
 
 		// /*int version = */ input.readInt(); /* == 4 */
@@ -2009,15 +2005,15 @@ public class Persistence implements IPersistence {
 		
 		// special value
 		boolean readOnly = input.readBoolean();
-		boolean isOpen = input.readBoolean();
+		input.readBoolean(); // remove is open flag
 		boolean isValid = input.readBoolean();
-		String info = (String) input.readObject();
+		input.readObject(); // remove info attribute
 
-		ItemDescription desc = new ItemDescription(id, itObject);
-		desc.setValid(isValid);
-		desc.setReadOnly(readOnly);
-		desc.setUniqueName(longname);
-		desc.setShortname(shortname);
+		ItemDelta desc = copy.loadItem(id, itObject);
+		desc.setValid(isValid, true);
+		desc.setReadOnly(readOnly, true);
+		desc.setQualifiedName(longname, true);
+		desc.setName(shortname, true);
 
 		// attributs
 		while (true) {
@@ -2030,7 +2026,7 @@ public class Persistence implements IPersistence {
 				IAttributeType<?> att = mig.findAttributeFrom(itObject, key);
 				if (att == null) continue;
 				
-				desc.getAttributes().put(att, value);
+				desc.loadAttribute(att, value);
 			} catch (ClassNotFoundException e) {
 				mLogger.log(Level.SEVERE, "Can't read the value for " + key, e);
 			} catch (IOException e) {
@@ -2038,7 +2034,7 @@ public class Persistence implements IPersistence {
 			}
 		}
 		// set the md5
-		// desc.getAttributes().put(Persistence.WS_PRIVATE_VERSION, md5);
+		//desc.loadAttribute(PersistenceNew2009.WS_PRIVATE_VERSION, md5);
 
 		// outgoing link
 		while (true) {
@@ -2056,16 +2052,20 @@ public class Persistence implements IPersistence {
 			String destTypeName = (String) input.readObject();
 			String link_info = (String) input.readObject();
 			UUID destTypeID = mig.getOrCreateITID(destTypeName);
+			
+			
 			ItemType destType = mig.findTypeFrom(destTypeID);
 			if (destType == null) continue;
+			
+			ItemDelta destItem = copy.loadItem(destId, destTypeID);
+			destItem.setQualifiedName(destLongName, true);
+			destItem.setName(destShortName, true);
 			
 			LinkType att = mig.findlinkTypeFrom(itObject, linkType);
 			if (att == null) continue;
 			
-			LinkDescription ldesc = new LinkDescription(desc, att, new ItemDescriptionRef(destId,
-					destType));
-			ldesc.getDestination().setUniqueName(destLongName);
-			ldesc.getDestination().setShortname(destShortName);
+			LinkDelta ldesc = desc.loadLink(att, destItem);
+			ldesc.setInfo(link_info);
 		}
 
 //		// dervivedlink
@@ -2117,6 +2117,7 @@ public class Persistence implements IPersistence {
 //					compShortName));
 //		}
 
+		desc.finishLoad();
 		// CadseCore.getWorkspaceDomain().endReadItemDescription(desc, input);
 		return desc;
 	}
@@ -2135,30 +2136,32 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
+	 * @throws CadseException 
 	 */
-	public static ItemDescription readSer_6(IMigrationFormat mig, ObjectInputStream input) throws IOException,
-			ClassNotFoundException {
+	public static ItemDelta readSer_6(LogicalWorkspaceTransaction copy, IMigrationFormat mig, ObjectInputStream input) throws IOException,
+			ClassNotFoundException, CadseException {
 		// version 6
 
 		// /*int version = */ input.readInt(); /* == 6 */
 
 		UUID id = readUUID(input);
 		UUID type = readUUID(input);
+		ItemType it = mig.findTypeFrom(type);
 		String longname = readString(input);
 		String shortname = readString(input);
 
 		// special value
 		boolean readOnly = input.readBoolean();
-		boolean isOpen = input.readBoolean();
+		input.readBoolean(); // remove is open flag
 		boolean isValid = input.readBoolean();
-		String info = readString(input);
+		readString(input); // remove info attribute
 
-		ItemType _it = mig.findTypeFrom(type);
-		ItemDescription desc = new ItemDescription(id, _it);
-		desc.setValid(isValid);
-		desc.setReadOnly(readOnly);
-		desc.setUniqueName(longname);
-		desc.setShortname(shortname);
+		ItemDelta desc = copy.loadItem(id, it);
+		desc.setLoaded(true);
+		desc.setValid(isValid, true);
+		desc.setReadOnly(readOnly, true);
+		desc.setQualifiedName(longname, true);
+		desc.setName(shortname, true);
 
 		// attributs
 		while (true) {
@@ -2166,14 +2169,33 @@ public class Persistence implements IPersistence {
 			if (key == null) {
 				break;
 			}
-			IAttributeType<?> att = mig.findAttributeFrom(_it, key);
+			IAttributeType<?> att = mig.findAttributeFrom(it, key);
 			if (att != null && att.getAttributeType() != null) {
 				input.addClass(att.getAttributeType());
 			}
 			try {
 				Object value = input.readObject();
 				if (att == null) continue;
-				desc.getAttributes().put(att, value);
+				if (value instanceof fede.workspace.domain.CompactUUID) {
+					value = new UUID(((fede.workspace.domain.CompactUUID)value).getMostSignificantBits(),
+							((fede.workspace.domain.CompactUUID)value).getLeastSignificantBits());
+				}
+				else if (value instanceof fede.workspace.domain.root.type.TWCommitKind) {
+					value = TWCommitKind.valueOf(value.toString());
+				}
+				else if (value instanceof fede.workspace.domain.root.type.TWDestEvol) {
+					value = TWDestEvol.valueOf(value.toString());
+				}
+				else if (value instanceof fede.workspace.domain.root.type.TWEvol) {
+					value = TWEvol.valueOf(value.toString());
+				}
+				else if (value instanceof fede.workspace.domain.root.type.TWUpdateKind) {
+					value = TWUpdateKind.valueOf(value.toString());
+				}
+				else if (value instanceof fr.imag.adele.cadseg.model.type.PositionEnum) {
+					value = EPosLabel.valueOf(value.toString());
+				}
+				desc.loadAttribute(att, value);
 			} catch (ClassNotFoundException e) {
 				mLogger.log(Level.SEVERE, "Can't read the value for " + key, e);
 			} catch (IOException e) {
@@ -2181,7 +2203,7 @@ public class Persistence implements IPersistence {
 			}
 		}
 		// set the md5
-		// desc.getAttributes().put(Persistence.WS_PRIVATE_VERSION, md5);
+		//desc.loadAttribute(PersistenceNew2009.WS_PRIVATE_VERSION, md5);
 
 		// outgoing link
 		while (true) {
@@ -2195,9 +2217,9 @@ public class Persistence implements IPersistence {
 				break;
 			}
 			UUID destId = readUUID(input);
-			String destLongName = readString(input);
+			String destQualifiedName = readString(input);
 
-			String destShortName = readString(input);
+			String destName = readString(input);
 
 			UUID destTypeName = readUUID(input);
 			String link_info = readString(input);
@@ -2207,51 +2229,21 @@ public class Persistence implements IPersistence {
 			ItemType destType = mig.findTypeFrom(destTypeName);
 			if (destType == null) continue;
 			
-			LinkType att = mig.findlinkTypeFrom(_it, linkType);
+			LinkType att = mig.findlinkTypeFrom(it, linkType);
 			if (att == null) continue;
+			
+			ItemDelta destItem = copy.loadItem(destId, destTypeName);
+			if (!destItem.isStatic()) {
+				destItem.setQualifiedName(destQualifiedName, true);
+				destItem.setName(destName, true);
+			}
 
-			LinkDescription ldesc = new LinkDescription(desc, att, new ItemDescriptionRef(destId, destType));
-			ldesc.getDestination().setUniqueName(destLongName);
-			ldesc.getDestination().setShortname(destShortName);
-			ldesc.setVersion(version);
+			LinkDelta ldesc = desc.loadLink(att, destItem);
+			ldesc.setInfo(link_info, true);
+			ldesc.setVersion(version, true);
 		}
 
-//		// dervivedlink
-//		while (true) {
-//			String linkType = readString(input);
-//			if (linkType == null) {
-//				break;
-//			}
-//			UUID destId = readUUID(input);
-//			String destUniqueName = readString(input);
-//			String destShortName = readString(input);
-//			UUID destTypeName = readUUID(input);
-//			String link_info = readString(input);
-//
-//			boolean isAggregation = input.readBoolean();
-//			boolean isRequire = input.readBoolean();
-//			String originLinkTypeID = readString(input);
-//			UUID originLinkSourceTypeID = readUUID(input);
-//			UUID originLinkDestinationTypeID = readUUID(input);
-//			int version = input.readInt();
-//
-//			ItemDescriptionRef dest = new ItemDescriptionRef(destId, destTypeName, destUniqueName, destShortName);
-//			DerivedLinkDescription derivedLinkDescription = new DerivedLinkDescription(desc, linkType, dest,
-//					isAggregation, isRequire, link_info, originLinkTypeID, originLinkSourceTypeID,
-//					originLinkDestinationTypeID, version);
-//			desc.addDerivedLink(derivedLinkDescription);
-//		}
-//		int size = input.read();
-//		for (int i = 0; i < size; i++) {
-//			UUID compId = readUUID(input);
-//			String compUniqueName = readString(input);
-//			;
-//			String compShortName = readString(input);
-//			;
-//			UUID compTypeName = readUUID(input);
-//
-//			desc.addComponantsLink(new ItemDescriptionRef(compId, compTypeName, compUniqueName, compShortName));
-//		}
+		desc.finishLoad();
 
 		// CadseCore.getWorkspaceDomain().endReadItemDescription(desc, input);
 		return desc;
@@ -2383,7 +2375,7 @@ public class Persistence implements IPersistence {
 	 * @throws Throwable
 	 *             the throwable
 	 */
-	public static ItemDescription readSer(LogicalWorkspace wl, IMigrationFormat mig, File itemFile) throws Throwable {
+	public static ItemDelta readSer(LogicalWorkspaceTransaction wl, IMigrationFormat mig, File itemFile) throws Throwable {
 		if (!itemFile.exists()) {
 			throw new IOException("Can't find the file : " + itemFile.toString());
 		}
@@ -2410,17 +2402,18 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
+	 * @throws CadseException 
 	 */
-	public static ItemDescription readFromByteArray(LogicalWorkspace wl, IMigrationFormat mig, byte[] data)
-			throws IOException, ClassNotFoundException {
+	public static ItemDelta readFromByteArray(LogicalWorkspaceTransaction copy, IMigrationFormat mig, byte[] data)
+			throws IOException, ClassNotFoundException, CadseException {
 		ObjectInputStream input = null;
 		try {
 
 			input = new ObjectInputStream(new ByteArrayInputStream(data));
 			int version = input.readInt();
-			ItemDescription desc = null;
+			ItemDelta desc = null;
 			if (version == VERSION_6) {
-				desc = readSer_6(mig, input);
+				desc = readSer_6(copy, mig, input);
 
 			} else if (version == VERSION_4) {
 				// desc = readSer_4(mig, md5, input);
@@ -2428,10 +2421,7 @@ public class Persistence implements IPersistence {
 				// desc.setRecomputeComponantsAndDerivedLink(true);
 				return null;
 			} else if (version == VERSION_5) {
-				desc = readSer_5(mig, input);
-				if (desc != null) {
-					desc.setRecomputeComponantsAndDerivedLink(true);
-				}
+				desc = readSer_5(copy, mig, input);
 			}
 			return desc;
 		} finally {
@@ -2475,20 +2465,6 @@ public class Persistence implements IPersistence {
 				input.close();
 			}
 		}
-	}
-
-	public ItemDelta loadFromPersistence(LogicalWorkspaceTransaction wl, InputStream stream) throws CadseException {
-		return new PersistenceNew2009().loadFromPersistence(wl, stream);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see fede.workspace.role.persistance.IPersistance#loadFromPersistence(fr.imag.adele.cadse.core.IWorkspaceLogique,
-	 *      java.net.URL)
-	 */
-	public ItemDelta loadFromPersistence(LogicalWorkspaceTransaction wl, URL url) throws CadseException {
-		return new PersistenceNew2009().loadFromPersistence(wl, url);
 	}
 
 	/**
@@ -2594,13 +2570,13 @@ public class Persistence implements IPersistence {
 	 * @see fede.workspace.role.persistance.IPersistance#load(fr.imag.adele.cadse.core.IWorkspaceLogique,
 	 *      java.io.File, boolean)
 	 */
-	public ItemDescription[] load(LogicalWorkspace wl, File directory, boolean failthrow) throws IOException,
+	public ItemDelta[] load(LogicalWorkspace wl, File directory, boolean failthrow) throws IOException,
 			CadseException {
-		Map<UUID, ItemDescription> items = new HashMap<UUID, ItemDescription>();
+		Map<UUID, ItemDelta> items = new HashMap<UUID, ItemDelta>();
 		IMigrationFormat mig = new MigrationFormat(wl, mLogger);
 		loadItemDescriptionFromRepo(mig, directory, null, items);
-		Collection<ItemDescription> values = items.values();
-		return (ItemDescription[]) values.toArray(new ItemDescription[values.size()]);
+		Collection<ItemDelta> values = items.values();
+		return (ItemDelta[]) values.toArray(new ItemDelta[values.size()]);
 	}
 
 	/*
@@ -2748,16 +2724,16 @@ public class Persistence implements IPersistence {
 	}
 
 	@Override
+	public void saveSer(Item item, File fileSer) throws CadseException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public Item[] loadFromPersistence(LogicalWorkspace lw, List<URL> url)
 			throws CadseException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void saveSer(Item item, File fileSer) throws CadseException {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
