@@ -70,6 +70,11 @@
         	<artifactId>org.eclipse.core.resources</artifactId>
         	<version>3.5.1.R35x_v20090826-0451</version>
         </dependency>
+        <dependency>
+        	<groupId>org.eclipse</groupId>
+        	<artifactId>org.eclipse.core.runtime</artifactId>
+        	<version>3.5.0.v20090525</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

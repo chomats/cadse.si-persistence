@@ -878,7 +878,7 @@ public class Main {
 	public static void main(String[] args) {
 		java.io.File dir = new java.io.File(args[0]);
 		StringBuilder sb = new StringBuilder();
-		PersistenceNew2009 p  = new PersistenceNew2009();
+		Persistence p  = new Persistence();
 		
 		if (args.length == 1) {
 			File[] ser = dir.listFiles();
