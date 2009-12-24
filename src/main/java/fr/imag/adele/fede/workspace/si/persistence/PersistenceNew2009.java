@@ -38,6 +38,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import fr.imag.adele.cadse.as.platformide.IPlatformIDE;
 import fr.imag.adele.cadse.core.CadseException;
 import java.util.UUID;
+
+import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemType;
@@ -224,7 +226,7 @@ public class PersistenceNew2009 {
 				try {
 					ItemDelta itemLoaded = loadItem(copy, mig, file, false);
 					if (itemLoaded == null) {
-						pOld.delete(file);
+						delete(file);
 						mLogger.info("Delete file " + file.getName());
 						continue;
 					}
@@ -339,15 +341,16 @@ public class PersistenceNew2009 {
 	 */
 	private ItemDelta byteArrayToItemDescription(LogicalWorkspaceTransaction copy, IMigrationFormat mig,
 			byte[] data) throws IOException, ClassNotFoundException, NoSuchAlgorithmException, CadseException {
-		boolean oldLock = pOld.lock;
+		boolean oldLock = lock;
 		try {
-			pOld.lock = true;
-			pOld.setEnableEvent(false);
+			lock = true;
+			setEnableEvent(false);
+			// byte[] md5 = MD5.getMD5(data);
 			return readFromByteArray(copy, mig, data);
 		} finally {
 
-			pOld.setEnableEvent(true);
-			pOld.lock = oldLock;
+			setEnableEvent(true);
+			lock = oldLock;
 		}
 	}
 
@@ -370,7 +373,7 @@ public class PersistenceNew2009 {
 	 * @throws CadseException
 	 * @throws CoreException
 	 */
-	private static ItemDelta readSer_5(LogicalWorkspaceTransaction copy, IMigrationFormat mig,
+	public static ItemDelta readSer_5(LogicalWorkspaceTransaction copy, IMigrationFormat mig,
 			ObjectInput input) throws IOException, ClassNotFoundException, CadseException {
 		// version 5
 
@@ -384,14 +387,15 @@ public class PersistenceNew2009 {
 		if (it == null) {
 			return null;
 		}
-
+		ItemType itObject = mig.findTypeFrom(it);
+		
 		// special value
 		boolean readOnly = input.readBoolean();
 		input.readBoolean(); // remove is open flag
 		boolean isValid = input.readBoolean();
 		input.readObject(); // remove info attribute
 
-		ItemDelta desc = copy.loadItem(id, it);
+		ItemDelta desc = copy.loadItem(id, itObject);
 		desc.setValid(isValid, true);
 		desc.setReadOnly(readOnly, true);
 		desc.setQualifiedName(longname, true);
@@ -405,7 +409,10 @@ public class PersistenceNew2009 {
 			}
 			try {
 				Object value = input.readObject();
-				desc.loadAttribute(key, value);
+				IAttributeType<?> att = mig.findAttributeFrom(itObject, key);
+				if (att == null) continue;
+				
+				desc.loadAttribute(att, value);
 			} catch (ClassNotFoundException e) {
 				mLogger.log(Level.SEVERE, "Can't read the value for " + key, e);
 			} catch (IOException e) {
@@ -431,12 +438,19 @@ public class PersistenceNew2009 {
 			String destTypeName = (String) input.readObject();
 			String link_info = (String) input.readObject();
 			UUID destTypeID = mig.getOrCreateITID(destTypeName);
-
+			
+			
+			ItemType destType = mig.findTypeFrom(destTypeID);
+			if (destType == null) continue;
+			
 			ItemDelta destItem = copy.loadItem(destId, destTypeID);
-			destItem.setUniqueName(destLongName, true);
-			destItem.setShortName(destShortName, true);
-
-			LinkDelta ldesc = desc.loadLink(linkType, destItem);
+			destItem.setQualifiedName(destLongName, true);
+			destItem.setName(destShortName, true);
+			
+			LinkType att = mig.findlinkTypeFrom(itObject, linkType);
+			if (att == null) continue;
+			
+			LinkDelta ldesc = desc.loadLink(att, destItem);
 			ldesc.setInfo(link_info);
 		}
 
@@ -515,7 +529,7 @@ public class PersistenceNew2009 {
 	 * @throws CadseException
 	 * @throws CoreException
 	 */
-	private static ItemDelta readSer_6(LogicalWorkspaceTransaction copy, ObjectInputStream input)
+	public static ItemDelta readSer_6(LogicalWorkspaceTransaction copy, ObjectInputStream input)
 			throws IOException, ClassNotFoundException, CadseException {
 		// version 6
 
@@ -657,9 +671,8 @@ public class PersistenceNew2009 {
 
 		desc.finishLoad();
 
-		return desc;
 		// CadseCore.getWorkspaceDomain().endReadItemDescription(desc, input);
-
+		return desc;
 	}
 
 	/**
