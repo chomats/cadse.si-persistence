@@ -228,6 +228,55 @@ public class Persistence implements IPersistence {
 		//	workspaceCU.endOperation();
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see fede.workspace.role.persistance.IPersistance#load(java.lang.String)
+	 */
+	public boolean load(final String location) {
+		this.workspaceCU = workspaceCU;
+		//workspaceCU.beginOperation("load");
+		long start = System.currentTimeMillis();
+		try {
+			enablePersistance = false;
+
+			File wsLocation = new File(location);
+			File location_melusine = new File(wsLocation, Persistence.MELUSINE_DIRECTORY);
+
+			// load the workspace information : cadse name;
+			loadID2(location);
+
+			try {
+				LogicalWorkspace workspaceLogique = workspaceCU.getLogicalWorkspace();
+				IMigrationFormat mig = new MigrationFormat(workspaceLogique, mLogger);
+				Map<UUID, ItemDelta> items = new HashMap<UUID, ItemDelta>();
+
+				LogicalWorkspaceTransaction copy = workspaceLogique.createTransaction();
+				loadItemDescriptionFromRepo(copy, mig, location_melusine, null, items);
+
+				/* Collection<Item> items2 = */
+				copy.commit(false, false, true, null);
+
+			} catch (Throwable e) {
+				//workspaceCU.reset();
+				throw e;
+			}
+
+			// }}, false, true, true, true);
+		} catch (Throwable e1) {
+			mLogger.log(Level.SEVERE, "load", e1);
+			return false;
+		} finally {
+			enablePersistance = true;
+		//	workspaceCU.endOperation();
+			mLogger.finest("Load peristance in " + (System.currentTimeMillis() - start) + " ms.");
+
+
+		}
+
+		return true;
+	}
 
 	/**
 	 * Save.
@@ -498,10 +547,6 @@ public class Persistence implements IPersistence {
 		return f.exists();
 	}
 
-	public boolean load(String location) {
-		return new PersistenceNew2009().load(location, workspaceCU, this);
-	}
-
 //	/**
 //	 * Migrate.
 //	 *
@@ -600,7 +645,8 @@ public class Persistence implements IPersistence {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	void loadItemDescriptionFromRepo(IMigrationFormat mig, File location_melusine, IProgressMonitor monitor,
+	void loadItemDescriptionFromRepo(LogicalWorkspaceTransaction copy, IMigrationFormat mig, 
+			File location_melusine, IProgressMonitor monitor,
 			Map<UUID, ItemDelta> items) throws IOException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
@@ -632,7 +678,6 @@ public class Persistence implements IPersistence {
 			}
 			if (nameFile.endsWith(".ser")) {
 				try {
-					LogicalWorkspaceTransaction copy= null;
 					ItemDelta itemLoaded = loadItem(copy, mig, file, false);
 					if (itemLoaded == null) {
 						delete(file);
@@ -1170,6 +1215,7 @@ public class Persistence implements IPersistence {
 	 *             the no such algorithm exception
 	 * @throws CadseException
 	 *             the melusine exception
+	 * @throws CoreException
 	 */
 	private ItemDelta byteArrayToItemDescription(LogicalWorkspaceTransaction copy, IMigrationFormat mig, byte[] data) throws IOException,
 			ClassNotFoundException, CadseException {
@@ -1787,7 +1833,7 @@ public class Persistence implements IPersistence {
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream(256);
 		try {
 			output = new ObjectOutputStream(byteOut);
-			Persistence.writeSer_6(output, item);
+			writeSer_6(output, item);
 			output.flush();
 		} finally {
 			if (output != null) {
@@ -1983,12 +2029,11 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
-	 * @throws CadseException 
 	 * @throws CadseException
 	 * @throws CoreException
 	 */
-	public static ItemDelta readSer_5(LogicalWorkspaceTransaction copy, IMigrationFormat mig, ObjectInput input) throws IOException,
-			ClassNotFoundException, CadseException {
+	public static ItemDelta readSer_5(LogicalWorkspaceTransaction copy, IMigrationFormat mig,
+			ObjectInput input) throws IOException, ClassNotFoundException, CadseException {
 		// version 5
 
 		// /*int version = */ input.readInt(); /* == 4 */
@@ -2034,7 +2079,7 @@ public class Persistence implements IPersistence {
 			}
 		}
 		// set the md5
-		//desc.loadAttribute(PersistenceNew2009.WS_PRIVATE_VERSION, md5);
+		//desc.loadAttribute(WS_PRIVATE_VERSION, md5);
 
 		// outgoing link
 		while (true) {
@@ -2136,7 +2181,8 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
-	 * @throws CadseException 
+	 * @throws CadseException
+	 * @throws CoreException
 	 */
 	public static ItemDelta readSer_6(LogicalWorkspaceTransaction copy, IMigrationFormat mig, ObjectInputStream input) throws IOException,
 			ClassNotFoundException, CadseException {
@@ -2203,7 +2249,7 @@ public class Persistence implements IPersistence {
 			}
 		}
 		// set the md5
-		//desc.loadAttribute(PersistenceNew2009.WS_PRIVATE_VERSION, md5);
+		//desc.loadAttribute(WS_PRIVATE_VERSION, md5);
 
 		// outgoing link
 		while (true) {
@@ -2402,7 +2448,8 @@ public class Persistence implements IPersistence {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ClassNotFoundException
 	 *             the class not found exception
-	 * @throws CadseException 
+	 * @throws CadseException
+	 * @throws CoreException
 	 */
 	public static ItemDelta readFromByteArray(LogicalWorkspaceTransaction copy, IMigrationFormat mig, byte[] data)
 			throws IOException, ClassNotFoundException, CadseException {
@@ -2419,9 +2466,14 @@ public class Persistence implements IPersistence {
 				// desc = readSer_4(mig, md5, input);
 				// desc.setModified(true);
 				// desc.setRecomputeComponantsAndDerivedLink(true);
+				// NOTHING
+				// OLDER VERSION
 				return null;
 			} else if (version == VERSION_5) {
 				desc = readSer_5(copy, mig, input);
+				if (desc != null) {
+					desc.setModified(true);
+				}
 			}
 			return desc;
 		} finally {
@@ -2574,7 +2626,7 @@ public class Persistence implements IPersistence {
 			CadseException {
 		Map<UUID, ItemDelta> items = new HashMap<UUID, ItemDelta>();
 		IMigrationFormat mig = new MigrationFormat(wl, mLogger);
-		loadItemDescriptionFromRepo(mig, directory, null, items);
+		loadItemDescriptionFromRepo(null, mig, directory, null, items);
 		Collection<ItemDelta> values = items.values();
 		return (ItemDelta[]) values.toArray(new ItemDelta[values.size()]);
 	}
