@@ -40,7 +40,9 @@ import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.core.attribute.IntegerAttributeType;
 import fr.imag.adele.cadse.core.attribute.StringAttributeType;
 import fr.imag.adele.cadse.core.attribute.URLAttributeType;
+import fr.imag.adele.cadse.core.build.Composer;
 import fr.imag.adele.cadse.core.build.Exporter;
+import fr.imag.adele.cadse.core.build.IBuildingContext;
 import fr.imag.adele.cadse.core.transaction.delta.CreateOperation;
 import fr.imag.adele.cadse.core.transaction.delta.DeleteOperation;
 import fr.imag.adele.cadse.core.transaction.delta.ImmutableWorkspaceDelta;
@@ -1619,6 +1621,36 @@ public class PrintItemDelta implements ItemDelta {
 
 	@Override
 	public void setQualifiedName(String qualifiedName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void build(IBuildingContext context) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clean(IBuildingContext context, boolean componentsContent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void compose(IBuildingContext context) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setComposers(Composer... composers) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setExporters(Exporter... exporters) {
 		// TODO Auto-generated method stub
 		
 	}
