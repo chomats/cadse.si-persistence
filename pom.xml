@@ -7,121 +7,64 @@
 	<artifactId>si.persistence</artifactId>
 	<name>fr.imag.adele.cadse.si.persistence</name>
 	<version>2.3.0-SNAPSHOT</version>
-    <organization>
-        <name>Adele/LIG/ Grenoble University, France</name>
-        <url>http://www-adele.imag.fr/</url>
-    </organization>
+    <parent>
+		<artifactId>fr.imag.adele.cadse.parent.ipojo</artifactId>
+		<groupId>fr.imag.adele.cadse</groupId>
+		<version>2.3.0-SNAPSHOT</version>
+		<relativePath>../fr.imag.adele.cadse.parent.ipojo</relativePath>
+	</parent>
+	
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <manifestLocation>META-INF</manifestLocation>
                     <instructions>
-                    	<Bundle-SymbolicName>${pom.name};singleton:=true</Bundle-SymbolicName>
-                        <Bundle-Name>${pom.name}</Bundle-Name>
-                        <Bundle-Description>${pom.description}</Bundle-Description>
                         <Export-Package>fr.imag.adele.fede.workspace.si.persistence</Export-Package>
-                        <Private-Package></Private-Package>
-                        <Import-Package>*</Import-Package>
-						<Ipojo-auto-start>true</Ipojo-auto-start>
-                       	<_removeheaders>Bnd-LastModified</_removeheaders>
-                    </instructions>
+                   </instructions>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <mkdir dir="${basedir}/META-INF/" />
-                                <copy todir="${basedir}/META-INF/" preservelastmodified="true">
-                                    <fileset dir="${basedir}/target/classes/META-INF"/>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- iPOJO Maven Plugin Configuration : nothing to do -->
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-				<version>1.4.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>ipojo-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>as.cu</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>cu.core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
         	<groupId>${project.groupId}</groupId>
         	<artifactId>util.io</artifactId>
-        	<version>${project.version}</version>
         </dependency>        
         <dependency>
         	<groupId>${project.groupId}</groupId>
         	<artifactId>as.persistence</artifactId>
-        	<version>${project.version}</version>
         </dependency>
         <dependency>
         	<groupId>${project.groupId}</groupId>
         	<artifactId>compatility</artifactId>
-        	<version>${project.version}</version>
         </dependency>
         <dependency>
         	<groupId>org.eclipse</groupId>
         	<artifactId>org.eclipse.core.jobs</artifactId>
-        	<version>3.4.100.v20090429-1800</version>
         </dependency>
         <dependency>
         	<groupId>org.eclipse</groupId>
         	<artifactId>org.eclipse.equinox.common</artifactId>
-        	<version>3.5.1.R35x_v20090807-1100</version>
         </dependency>
         <dependency>
         	<groupId>org.eclipse</groupId>
         	<artifactId>org.eclipse.core.resources</artifactId>
-        	<version>3.5.1.R35x_v20090826-0451</version>
         </dependency>
         <dependency>
         	<groupId>org.eclipse</groupId>
         	<artifactId>org.eclipse.core.runtime</artifactId>
-        	<version>3.5.0.v20090525</version>
         </dependency>
     </dependencies>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 </project>
 
