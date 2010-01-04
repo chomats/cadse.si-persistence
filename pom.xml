@@ -25,6 +25,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
+                    <manifestLocation>META-INF</manifestLocation>
                     <instructions>
                     	<Bundle-SymbolicName>${pom.name};singleton:=true</Bundle-SymbolicName>
                         <Bundle-Name>${pom.name}</Bundle-Name>
@@ -32,6 +33,8 @@
                         <Export-Package>fr.imag.adele.fede.workspace.si.persistence</Export-Package>
                         <Private-Package></Private-Package>
                         <Import-Package>*</Import-Package>
+						<Ipojo-auto-start>true</Ipojo-auto-start>
+                       	<_removeheaders>Bnd-LastModified</_removeheaders>
                     </instructions>
                 </configuration>
             </plugin>
