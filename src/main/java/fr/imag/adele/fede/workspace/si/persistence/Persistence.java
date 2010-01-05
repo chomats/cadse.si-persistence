@@ -853,37 +853,7 @@ public class Persistence implements IPersistence {
 
 
 	// create a file
-	/**
-	 * Write no content.
-	 *
-	 * @param item
-	 *            the item
-	 * @param itemFile
-	 *            the item file
-	 *
-	 * @throws FileNotFoundException
-	 *             the file not found exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	private void writeNoContent(Item item, File itemFile) throws FileNotFoundException, IOException {
-
-		ObjectOutputStream output = null;
-		try {
-			output = new ObjectOutputStream(new FileOutputStream(itemFile));
-			output.writeUTF("no-content");
-			output.flush();
-			output.close();
-		} catch (IOException e) {
-			if (output != null) {
-				output.close();
-			}
-			if (itemFile.exists()) {
-				itemFile.delete();
-			}
-			throw e;
-		}
-	}
+	
 
 	/**
 	 * Import item read.
@@ -1262,10 +1232,10 @@ public class Persistence implements IPersistence {
 			if (true) {
 				return null;
 			} else {
-				return new File(fileResource.getParentFile(), ".melusine-" + fileResource.getName().replace('.', '_'));
+				return new File(fileResource.getParentFile(), ".cadse-" + fileResource.getName().replace('.', '_'));
 			}
 		} else {
-			return new File(fileResource, ".melusine.ser");
+			return new File(fileResource, ".cadse.ser");
 		}
 
 	}
@@ -1310,11 +1280,11 @@ public class Persistence implements IPersistence {
 			if (true) {
 				return null;
 			} else {
-				return new File(fileResource.getParentFile(), ".melusine-" + fileResource.getName().replace('.', '_')
+				return new File(fileResource.getParentFile(), ".cadse-" + fileResource.getName().replace('.', '_')
 						+ ".xml");
 			}
 		} else {
-			return new File(fileResource, ".melusine.xml");
+			return new File(fileResource, ".cadse.xml");
 		}
 
 	}
