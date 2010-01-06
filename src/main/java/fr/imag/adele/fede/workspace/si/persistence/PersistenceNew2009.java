@@ -57,7 +57,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import adele.util.io.FileUtil;
 
-import fede.workspace.tool.migration.MigrationModel;
 import fr.imag.adele.cadse.as.platformide.IPlatformIDE;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
@@ -89,7 +88,6 @@ import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.ui.EPosLabel;
 import fr.imag.adele.cadse.util.Assert;
 import fr.imag.adele.fede.workspace.as.persistence.IPersistence;
-import fr.imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse;
 import fr.imag.adele.teamwork.db.ModelVersionDBException;
 import fr.imag.adele.teamwork.db.ModelVersionDBService2;
 import fr.imag.adele.teamwork.db.TransactionException;
@@ -97,7 +95,7 @@ import fr.imag.adele.teamwork.db.TransactionException;
 /**
  * @generated
  */
-public class PersistenceNew2009 implements ReadItemType, IPersistence {
+public class PersistenceNew2009 implements ReadItemType {
 
 
 
@@ -1157,24 +1155,6 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 		saveAll();
 	}
 
-	public void start() {
-
-		Assert.isTrue(threadSave == null, "Error in persistance, thread allready started.");
-
-		threadSave = new WSPersitanceService(this);
-		threadSave.start();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see fede.v6.melusine.core.InstanceObject#stop()
-	 */
-	public void stop() {
-		//forceSave();
-		threadSave.stopService();
-	}
 
 	/**
 	 * Read ser header_6.
@@ -1798,9 +1778,9 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 			}
 			try {
 				Object value = input.readObject();
-				if (value instanceof fede.workspace.domain.UUID) {
-					value = new UUID(((fede.workspace.domain.UUID)value).getMostSignificantBits(),
-							((fede.workspace.domain.UUID)value).getLeastSignificantBits());
+				if (value instanceof fede.workspace.domain.CompactUUID) {
+					value = new UUID(((fede.workspace.domain.CompactUUID)value).getMostSignificantBits(),
+							((fede.workspace.domain.CompactUUID)value).getLeastSignificantBits());
 				}
 				else if (value instanceof fede.workspace.domain.root.type.TWCommitKind) {
 					value = TWCommitKind.valueOf(value.toString());
@@ -2011,7 +1991,7 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 		// /*int version = */ input.readInt(); /* == 6 */
 		UUID id = readUUID(input);
 		UUID type = readUUID(input);
-		int typeId = db.checkLocalIdentifier(type.toUUID());
+		int typeId = db.checkLocalIdentifier(type);
 		if (typeId == -1)  {
 			mLogger.log(Level.SEVERE, "Cannot found type "+type);
 			return -1;
@@ -2033,7 +2013,7 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 			db.beginTransaction(); 
 		
 			
-			int objectId = db.getOrCreateLocalIdentifier(id.toUUID());
+			int objectId = db.getOrCreateLocalIdentifier(id);
 			db.saveObject(objectId , ModelVersionDBService2.OBJECT_STATE_NORMAL, ids(typeId), -1, qualifiedName, name, null);
 			if (id.equals(type)){
 				mLogger.log(Level.SEVERE, "Meta type? "+objectId);
@@ -2054,9 +2034,9 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 				Object value = null;
 				try {
 					value = input.readObject();
-					if (value instanceof fede.workspace.domain.UUID) {
-						value = new UUID(((fede.workspace.domain.UUID)value).getMostSignificantBits(),
-								((fede.workspace.domain.UUID)value).getLeastSignificantBits());
+					if (value instanceof fede.workspace.domain.CompactUUID) {
+						value = new UUID(((fede.workspace.domain.CompactUUID)value).getMostSignificantBits(),
+								((fede.workspace.domain.CompactUUID)value).getLeastSignificantBits());
 					}
 					else if (value instanceof fede.workspace.domain.root.type.TWCommitKind) {
 						value = TWCommitKind.valueOf(value.toString());
@@ -2126,8 +2106,8 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 					mLogger.log(Level.SEVERE, "Cannot found link type "+linkTypeID+" for objecId "+objectId+" for type of object "+typeId);
 					continue;
 				};
-				int localDestTypeId = db.checkLocalIdentifier(destTypeName.toUUID());
-				int localDestId = db.checkLocalIdentifier(destId.toUUID());
+				int localDestTypeId = db.checkLocalIdentifier(destTypeName);
+				int localDestId = db.checkLocalIdentifier(destId);
 				if (localDestTypeId == -1) {
 					mLogger.log(Level.SEVERE, "Can't not found dest type " +destTypeName+
 							" for the link for " + linkTypeID+" ("+attId+") - >"+localDestTypeId+" for objecId "+objectId+" for type of object "+typeId);
@@ -2136,7 +2116,7 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 				if (localDestId == -1) {
 					if ("<no value>".equals(destName))
 						destName = null;
-					localDestId = db.getOrCreateLocalIdentifier(destId.toUUID());
+					localDestId = db.getOrCreateLocalIdentifier(destId);
 					db.saveObject(localDestId, ModelVersionDBService2.OBJECT_STATE_UNRESOLVED, ids(localDestTypeId), -1, destQualifiedName, destName, null);
 					db.setObjectVersion(localDestId, version);
 				}
@@ -2274,9 +2254,9 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 			}
 			try {
 				Object value = input.readObject();
-				if (value instanceof fede.workspace.domain.UUID) {
-					value = new UUID(((fede.workspace.domain.UUID)value).getMostSignificantBits(),
-							((fede.workspace.domain.UUID)value).getLeastSignificantBits());
+				if (value instanceof fede.workspace.domain.CompactUUID) {
+					value = new UUID(((fede.workspace.domain.CompactUUID)value).getMostSignificantBits(),
+							((fede.workspace.domain.CompactUUID)value).getLeastSignificantBits());
 				}
 				else if (value instanceof fede.workspace.domain.root.type.TWCommitKind) {
 					value = TWCommitKind.valueOf(value.toString());
@@ -2830,16 +2810,6 @@ public class PersistenceNew2009 implements ReadItemType, IPersistence {
 		}
 	}
 
-	@Override
-	public void save(Item item, File repository) throws IOException, CadseException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void startListener() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }
