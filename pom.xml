@@ -22,7 +22,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>fr.imag.adele.fede.workspace.si.persistence</Export-Package>
+                        <Export-Package>fr.imag.adele.fede.workspace.si.persistence;version="${version.cadse}"</Export-Package>
                    </instructions>
                 </configuration>
             </plugin>
