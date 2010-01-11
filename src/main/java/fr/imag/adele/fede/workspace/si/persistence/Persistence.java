@@ -1485,6 +1485,7 @@ public class Persistence implements IPersistence {
 		forceSave();
 		this.enablePersistance = false;
 		threadSave.stopService();
+		threadSave = null;
 	}
 
 	/**
