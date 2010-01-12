@@ -1624,6 +1624,9 @@ public class Persistence implements IPersistence {
 				if (key.isTransient()) {
 					continue;
 				}
+				if (key instanceof LinkType) {
+					continue;
+				}
 
 				Object value = item.getAttributeOwner(key);
 				if (value == null) {
