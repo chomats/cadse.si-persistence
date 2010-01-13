@@ -438,10 +438,6 @@ public class Persistence implements IPersistence {
 	 *            the versions
 	 */
 	private void saveID_6(String[] name, int[] versions) {
-		if (!enablePersistance) {
-			return;
-		}
-
 		if (wsLocation == null) {
 			return;
 		}
