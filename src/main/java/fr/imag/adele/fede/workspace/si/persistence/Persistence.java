@@ -2676,6 +2676,8 @@ public class Persistence implements IPersistence {
 			return;
 		}
 		CadseDomain theCurrentWD = getCadseDomain();
+		if (theCurrentWD == null) 
+			return;
 //		if (theCurrentWD.beginOperation("WSPersistance.saveall", false) == null) {
 //			return;
 //		}
