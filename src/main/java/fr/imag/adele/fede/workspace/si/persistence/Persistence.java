@@ -1660,35 +1660,6 @@ public class Persistence implements IPersistence {
 		}
 		writeString(output, null);
 
-//		// dervivedlink
-//		Set<DerivedLink> _derivedLinks = item.getDerivedLinks();
-//		for (DerivedLink link : _derivedLinks) {
-//			writeString(output, link.getLinkType().getName());
-//			writeUUID(output, link.getDestination().getId());
-//			writeString(output, link.getDestination().getQualifiedName());
-//			writeString(output, link.getDestination().getName());
-//			writeUUID(output, link.getDestination().getType().getId());
-//			writeString(output, null); // do not remove this line or change the
-//			// format (old place for info)
-//			output.writeBoolean(link.isAggregation());
-//			output.writeBoolean(link.isRequire());
-//			writeString(output, link.getDerivedType().getOriginLinkType().getName());
-//			writeUUID(output, link.getDerivedType().getOriginLinkType().getSource().getId());
-//			writeUUID(output, link.getDerivedType().getOriginLinkType().getDestination().getId());
-//			output.writeInt(link.getVersion());
-//		}
-//		writeString(output, null);
-//
-//		// Components
-//		Set<Item> comps = item.getComponents();
-//		output.write(comps.size());
-//		for (Item link : comps) {
-//			writeUUID(output, link.getId());
-//			writeString(output, link.getQualifiedName());
-//			writeString(output, link.getName());
-//			writeUUID(output, link.getType().getId());
-//		}
-
 	}
 
 	/**
@@ -1755,36 +1726,6 @@ public class Persistence implements IPersistence {
 			output.writeInt(link.getVersion());
 		}
 		writeString(output, null);
-
-//		// dervivedlink
-//		Set<DerivedLinkDescription> _derivedLinks = item.getDerived();
-//		for (DerivedLinkDescription link : _derivedLinks) {
-//			writeString(output, link.getType());
-//			writeUUID(output, link.getDestination().getId());
-//			writeString(output, link.getDestination().getQualifiedName());
-//			writeString(output, link.getDestination().getName());
-//			writeUUID(output, link.getDestination().getType());
-//			writeString(output, ""); // do not remove this line or change the
-//			// format (old place for info)
-//			output.writeBoolean(link.isAggregation());
-//			output.writeBoolean(link.isRequire());
-//			writeString(output, link.getOriginLinkTypeID());
-//			writeUUID(output, link.getOriginLinkSourceTypeID());
-//			writeUUID(output, link.getOriginLinkDestinationTypeID());
-//			output.write(link.getVersion());
-//		}
-//		writeString(output, null);
-//
-//		// Components
-//		Set<ItemDescriptionRef> comps = item.getComponents();
-//		output.write(comps.size());
-//		for (ItemDescriptionRef link : comps) {
-//			writeUUID(output, link.getId());
-//			writeString(output, link.getQualifiedName());
-//			writeString(output, link.getName());
-//			writeUUID(output, link.getType());
-//		}
-
 	}
 
 	/**
@@ -2243,10 +2184,16 @@ public class Persistence implements IPersistence {
 			int version = input.readInt();
 			
 			ItemType destType = mig.findTypeFrom(destTypeName);
-			if (destType == null) continue;
+			if (destType == null) {
+				mLogger.log(Level.SEVERE, "Can't find dest type " + destTypeName);
+				continue;
+			}
 			
 			LinkType att = mig.findlinkTypeFrom(it, linkType);
-			if (att == null) continue;
+			if (att == null) {
+				mLogger.log(Level.SEVERE, "Can't find attribute " + att);
+				continue;
+			}
 			
 			ItemDelta destItem = copy.loadItem(destId, destTypeName);
 			if (!destItem.isStatic()) {
@@ -2280,7 +2227,7 @@ public class Persistence implements IPersistence {
 		long firstLong = input.readLong();
 		if (firstLong == -1)
 			return null;
-		return new UUID(firstLong, firstLong);
+		return new UUID(firstLong, input.readLong());
 	}
 
 	/**
