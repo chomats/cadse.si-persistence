@@ -27,10 +27,12 @@ import java.util.logging.Logger;
 
 import java.util.UUID;
 
+import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
+import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
 
 /**
  * The Class MigrationFormat.
@@ -117,8 +119,20 @@ public class MigrationFormat implements IMigrationFormat {
 
 	@Override
 	public IAttributeType<?> findAttributeFrom(ItemType it, String attName) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			UUID uuid = UUID.fromString(attName);
+			Item foundItem = it.getLogicalWorkspace().getItem(uuid);
+			if (foundItem instanceof ItemDelta) {
+				ItemDelta delta = (ItemDelta) foundItem;
+				if (delta.isModified())
+					return delta.getAdapter(IAttributeType.class);
+				foundItem = delta.getBaseItem();
+			}
+			if (foundItem instanceof IAttributeType<?>)
+				return (IAttributeType<?>) foundItem;
+		} catch (Exception ignored) {
+		}
+		return it.getAttributeType(attName);
 	}
 
 	@Override
@@ -127,9 +141,15 @@ public class MigrationFormat implements IMigrationFormat {
 	}
 
 	@Override
-	public LinkType findlinkTypeFrom(ItemType itObject, String linkType) {
-		// TODO Auto-generated method stub
-		return null;
+	public LinkType findlinkTypeFrom(ItemType it, String linkType) {
+		try {
+			UUID uuid = UUID.fromString(linkType);
+			Item foundItem = it.getLogicalWorkspace().getItem(uuid);
+			if (foundItem instanceof LinkType)
+				return (LinkType) foundItem;
+		} catch (Exception ignored) {
+		}
+		return it.getOutgoingLinkType(linkType);
 	}
 
 }
