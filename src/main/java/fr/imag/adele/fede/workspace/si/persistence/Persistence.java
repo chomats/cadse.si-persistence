@@ -2104,6 +2104,10 @@ public class Persistence implements IPersistence {
 		UUID id = readUUID(input);
 		UUID type = readUUID(input);
 		ItemType it = mig.findTypeFrom(type);
+		if (it == null) {
+			mLogger.log(Level.WARNING, "Can't find type " + type);
+			return null;
+		}
 		String longname = readString(input);
 		String shortname = readString(input);
 
