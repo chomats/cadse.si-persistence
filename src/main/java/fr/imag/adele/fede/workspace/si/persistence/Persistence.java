@@ -2195,7 +2195,7 @@ public class Persistence implements IPersistence {
 			
 			LinkType att = mig.findlinkTypeFrom(it, linkType);
 			if (att == null) {
-				mLogger.log(Level.SEVERE, "Can't find attribute " + att);
+				mLogger.log(Level.SEVERE, "Can't find attribute " + linkType);
 				continue;
 			}
 			
