@@ -65,6 +65,7 @@ import fr.imag.adele.cadse.core.enumdef.TWCommitKind;
 import fr.imag.adele.cadse.core.enumdef.TWDestEvol;
 import fr.imag.adele.cadse.core.enumdef.TWEvol;
 import fr.imag.adele.cadse.core.enumdef.TWUpdateKind;
+import fr.imag.adele.cadse.core.impl.CadseCore;
 import fr.imag.adele.cadse.core.DerivedLink;
 import fr.imag.adele.cadse.core.DerivedLinkDescription;
 import fr.imag.adele.cadse.core.Item;
@@ -2105,6 +2106,7 @@ public class Persistence implements IPersistence {
 		UUID type = readUUID(input);
 		ItemType it = mig.findTypeFrom(type);
 		if (it == null) {
+			if (CadseCore.getRemovedElements().contains(type.toString())) return null;
 			mLogger.log(Level.WARNING, "Can't find type " + type);
 			return null;
 		}
@@ -2136,10 +2138,17 @@ public class Persistence implements IPersistence {
 			}
 			try {
 				Object value = input.readObject();
-				if (att == null) continue;
+				if (att == null) {
+					if (CadseCore.getRemovedElements().contains(it.getId()+key)) continue;
+					mLogger.log(Level.WARNING,"Cannot found attribute "+it.getId()+key+" in "+it.getName());
+					continue;
+				}
 				if (value instanceof fede.workspace.domain.CompactUUID) {
 					value = new UUID(((fede.workspace.domain.CompactUUID)value).getMostSignificantBits(),
 							((fede.workspace.domain.CompactUUID)value).getLeastSignificantBits());
+				}else if (value instanceof fr.imag.adele.cadse.core.CompactUUID) {
+					value = new UUID(((fr.imag.adele.cadse.core.CompactUUID)value).getMostSignificantBits(),
+							((fr.imag.adele.cadse.core.CompactUUID)value).getLeastSignificantBits());
 				}
 				else if (value instanceof fede.workspace.domain.root.type.TWCommitKind) {
 					value = TWCommitKind.valueOf(value.toString());
@@ -2189,13 +2198,16 @@ public class Persistence implements IPersistence {
 			
 			ItemType destType = mig.findTypeFrom(destTypeName);
 			if (destType == null) {
-				mLogger.log(Level.SEVERE, "Can't find dest type " + destTypeName);
+				if (CadseCore.getRemovedElements().contains(destTypeName.toString())) continue;
+				mLogger.log(Level.WARNING, "Can't find dest type " + destTypeName);
 				continue;
 			}
 			
 			LinkType att = mig.findlinkTypeFrom(it, linkType);
 			if (att == null) {
-				mLogger.log(Level.SEVERE, "Can't find attribute " + linkType);
+				if (CadseCore.getRemovedElements().contains(it.getId()+linkType) ||
+						CadseCore.getRemovedElements().contains(linkType)) continue;
+				mLogger.log(Level.WARNING, "Can't find attribute " + it.getId()+linkType);
 				continue;
 			}
 			

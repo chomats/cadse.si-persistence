@@ -32,6 +32,7 @@ import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
+import fr.imag.adele.cadse.core.impl.CadseCore;
 import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
 
 /**
@@ -132,7 +133,10 @@ public class MigrationFormat implements IMigrationFormat {
 				return (IAttributeType<?>) foundItem;
 		} catch (Exception ignored) {
 		}
-		return it.getAttributeType(attName);
+		IAttributeType<?> attributeType = it.getAttributeType(attName);
+		if (attributeType == null)
+			attributeType = CadseCore.getOldNameMap().get(attName);
+		return attributeType;
 	}
 
 	@Override
@@ -149,7 +153,10 @@ public class MigrationFormat implements IMigrationFormat {
 				return (LinkType) foundItem;
 		} catch (Exception ignored) {
 		}
-		return it.getOutgoingLinkType(linkType);
+		IAttributeType<?> attributeType = it.getOutgoingLinkType(linkType);
+		if (attributeType == null)
+			attributeType = CadseCore.getOldNameMap().get(linkType);
+		return (LinkType) attributeType;
 	}
 
 }
