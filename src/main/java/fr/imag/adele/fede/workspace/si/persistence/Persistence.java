@@ -1562,19 +1562,6 @@ public class Persistence implements IPersistence {
 	}
 
 	/**
-	 * External derived link write.
-	 *
-	 * @param output
-	 *            the output
-	 * @param link
-	 *            the link
-	 */
-	private static void externalDerivedLinkWrite(Appendable output, DerivedLink link) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
 	 * External componants write.
 	 *
 	 * @param output
@@ -1650,7 +1637,7 @@ public class Persistence implements IPersistence {
 			/*
 			 * link type dest id dest long name dest short name dest type info
 			 */
-			writeString(output, link.getLinkType().getName());
+			writeString(output, link.getLinkType().getId().toString());
 			writeUUID(output, link.getDestinationId());
 			writeString(output, link.getDestinationQualifiedName());
 			writeString(output, link.getDestinationName());
