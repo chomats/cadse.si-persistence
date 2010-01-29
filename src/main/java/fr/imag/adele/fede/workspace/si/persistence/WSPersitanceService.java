@@ -104,25 +104,27 @@ public class WSPersitanceService extends Thread {
 		public void workspaceChanged(ImmutableWorkspaceDelta delta) {
 			HashSet<Item> toPersistItems = new HashSet<Item>();
 			for (WSEvent wse : delta.getEvents()) {
+				Item item = (Item) wse.getOperationArgs()[0];
+				if (item.isStatic()) continue;
 				switch (wse.getEventTypeId()) {
 					case SET_ATTRIBUTE:
 						final IAttributeType<?> attDef = (IAttributeType<?>) wse.getOperationArgs()[1];
 						if (attDef.isTransient()) continue;
-						toPersistItems.add((Item) wse.getOperationArgs()[0]);
+						toPersistItems.add(item);
 						break;
 					case DELETE_OUTGOING_LINK:
 					case CREATE_OUTGOING_LINK:
 						toPersistItems.add(((Link) wse.getOperationArgs()[0]).getSource());
 						break;
 					case CREATE_ITEM:
-						toPersistItems.add((Item) wse.getOperationArgs()[0]);
+						toPersistItems.add(item);
 						break;
 
 					case DELETE_ITEM:
-						toPersistItems.add((Item) wse.getOperationArgs()[0]);
+						toPersistItems.add(item);
 						break;
 					case FORCE_SAVE:
-						toPersistItems.add((Item) wse.getOperationArgs()[0]);
+						toPersistItems.add(item);
 						break;
 					default:
 						break;
