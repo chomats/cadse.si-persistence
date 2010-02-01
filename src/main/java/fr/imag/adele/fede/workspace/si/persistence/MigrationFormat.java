@@ -19,6 +19,7 @@
 
 package fr.imag.adele.fede.workspace.si.persistence;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,7 @@ import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.core.impl.CadseCore;
+import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
 
 /**
@@ -53,9 +55,16 @@ public class MigrationFormat implements IMigrationFormat {
 
 	/** The new uuid. */
 	private Map<UUID, String> newUUID;
+	
+	/** The new uuid. */
+	private Map<UUID, ItemDelta> _items = new HashMap<UUID, ItemDelta>();
 
 	/** The log. */
 	private Logger log;
+
+	private LogicalWorkspaceTransaction lwT;
+
+	private Persistence p;
 
 	/**
 	 * Instantiates a new migration format.
@@ -65,9 +74,11 @@ public class MigrationFormat implements IMigrationFormat {
 	 * @param mLogger
 	 *            the m logger
 	 */
-	public MigrationFormat(LogicalWorkspace workspaceLogique, Logger mLogger) {
+	public MigrationFormat(Persistence p, LogicalWorkspaceTransaction lwT, LogicalWorkspace workspaceLogique, Logger mLogger) {
 		this.workspaceLogique = workspaceLogique;
 		this.log = mLogger;
+		this.p = p;
+		this.lwT = lwT;
 	}
 
 	/* (non-Javadoc)
@@ -119,12 +130,20 @@ public class MigrationFormat implements IMigrationFormat {
 	}
 
 	@Override
-	public IAttributeType<?> findAttributeFrom(ItemType it, String attName) {
+	public IAttributeType<?> findAttributeFrom(ItemType it, String attName) throws Throwable {
 		try {
 			UUID uuid = UUID.fromString(attName);
-			Item foundItem = it.getLogicalWorkspace().getItem(uuid);
+			Item foundItem = _items.get(uuid);
+			File fileItem = p.fileSerFromUUID(uuid);
+			if (foundItem == null && fileItem.exists()) {
+				foundItem = p.loadItem(getTransaction(), this, fileItem, false);
+			}
+			if (foundItem == null)
+				foundItem = it.getLogicalWorkspace().getItem(uuid);
 			if (foundItem instanceof ItemDelta) {
 				ItemDelta delta = (ItemDelta) foundItem;
+				if (delta.getRealItem() != null && delta.getRealItem() instanceof IAttributeType)
+					return (IAttributeType<?>) delta.getRealItem();
 				if (delta.isModified())
 					return delta.getAdapter(IAttributeType.class);
 				foundItem = delta.getBaseItem();
@@ -157,6 +176,21 @@ public class MigrationFormat implements IMigrationFormat {
 		if (attributeType == null)
 			attributeType = CadseCore.getOldNameMap().get(linkType);
 		return (LinkType) attributeType;
+	}
+	
+	@Override
+	public void registerItem(ItemDelta item) {
+		_items.put(item.getId(), item);
+	}
+	
+	@Override
+	public ItemDelta getItem(UUID uuid) {
+		return _items.get(uuid);
+	}
+	
+	@Override
+	public LogicalWorkspaceTransaction getTransaction() {
+		return lwT;
 	}
 
 }
