@@ -23,9 +23,13 @@ import java.util.Map;
 
 import java.util.UUID;
 
+import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.LinkType;
+import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
+import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
+import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
 
 /**
  * The Interface IMigrationFormat.
@@ -63,8 +67,14 @@ public interface IMigrationFormat {
 	
 	ItemType findTypeFrom(UUID id);
 
-	IAttributeType<?> findAttributeFrom(ItemType it, String attName);
+	IAttributeType<?> findAttributeFrom(ItemType it, String attName) throws Throwable;
 
 	LinkType findlinkTypeFrom(ItemType itObject, String linkType);
+	
+	LogicalWorkspaceTransaction getTransaction();
+	
+	public void registerItem(ItemDelta item);
+
+	ItemDelta getItem(UUID fromString);
 
 }
