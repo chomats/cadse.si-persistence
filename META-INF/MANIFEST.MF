@@ -1,0 +1,37 @@
+Manifest-Version: 1.0
+Export-Package: fr.imag.adele.fede.workspace.si.persistence;uses:="fr.
+ imag.adele.cadse.core.transaction,fr.imag.adele.cadse.core.transactio
+ n.delta,fr.imag.adele.cadse.core,fr.imag.adele.cadse.core.attribute,o
+ rg.eclipse.core.runtime,org.eclipse.core.runtime.jobs,org.eclipse.cor
+ e.resources,adele.util.io,fr.imag.adele.cadse.core.impl,fede.workspac
+ e.domain,fr.imag.adele.cadse.util,fede.workspace.domain.root.type,fr.
+ imag.adele.cadse.core.enumdef,fr.imag.adele.cadse.core.content,fr.ima
+ g.adele.cadse.core.ui,fr.imag.adele.cadse.as.platformide,fr.imag.adel
+ e.fede.workspace.as.persistence,fr.imag.adele.cadseg.model.type,fr.im
+ ag.adele.teamwork.db";version="2.3.0"
+Built-By: chomats
+Tool: Bnd-0.0.357
+Bundle-Name: fr.imag.adele.cadse.si.persistence
+Created-By: Apache Maven Bundle Plugin
+Bundle-Vendor: Adele/LIG/ Grenoble University, France
+Build-Jdk: 1.6.0_17
+Bundle-Version: 2.3.0.SNAPSHOT
+Ipojo-auto-start: true
+Bundle-ManifestVersion: 2
+Import-Package: adele.util.io,fede.workspace.domain;version="2.3",fede
+ .workspace.domain.root.type;version="2.3",fr.imag.adele.cadse.as.plat
+ formide;version="2.3",fr.imag.adele.cadse.core;version="2.3",fr.imag.
+ adele.cadse.core.attribute;version="2.3",fr.imag.adele.cadse.core.con
+ tent;version="2.3",fr.imag.adele.cadse.core.enumdef;version="2.3",fr.
+ imag.adele.cadse.core.impl;version="2.3",fr.imag.adele.cadse.core.tra
+ nsaction;version="2.3",fr.imag.adele.cadse.core.transaction.delta;ver
+ sion="2.3",fr.imag.adele.cadse.core.ui;version="2.3",fr.imag.adele.ca
+ dse.util,fr.imag.adele.cadseg.model.type;version="2.3",fr.imag.adele.
+ fede.workspace.as.persistence;version="2.3",fr.imag.adele.fede.worksp
+ ace.si.persistence;version="2.3",fr.imag.adele.teamwork.db;version="2
+ .3",org.eclipse.core.resources,org.eclipse.core.runtime;registry=spli
+ t;version="3.4",org.eclipse.core.runtime.jobs
+Bundle-SymbolicName: fr.imag.adele.cadse.si.persistence;singleton:=tru
+ e
+Bundle-DocURL: http://www-adele.imag.fr/
+
