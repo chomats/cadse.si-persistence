@@ -9,13 +9,13 @@ Export-Package: fr.imag.adele.fede.workspace.si.persistence;uses:="fr.
  g.adele.cadse.core.ui,fr.imag.adele.cadse.as.platformide,fr.imag.adel
  e.fede.workspace.as.persistence,fr.imag.adele.cadseg.model.type,fr.im
  ag.adele.teamwork.db";version="2.3.0"
-Built-By: chomats
+Built-By: etienne
 Tool: Bnd-0.0.357
 Bundle-Name: fr.imag.adele.cadse.si.persistence
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Adele/LIG/ Grenoble University, France
-Build-Jdk: 1.6.0_17
-Bundle-Version: 2.3.0.SNAPSHOT
+Build-Jdk: 1.6.0_0
+Bundle-Version: 2.3.0.SNAPSHOT-201002121709
 Ipojo-auto-start: true
 Bundle-ManifestVersion: 2
 Import-Package: adele.util.io,fede.workspace.domain;version="2.3",fede
