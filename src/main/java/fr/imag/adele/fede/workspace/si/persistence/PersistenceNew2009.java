@@ -779,7 +779,7 @@ public class PersistenceNew2009 implements ReadItemType {
 	 *             the no such algorithm exception
 	 */
 	void saveInternal(LoadState loadState, final Item item) throws IOException, FileNotFoundException, NoSuchAlgorithmException {
-		if (item.isStatic()) {
+		if (item.isRuntime()) {
 			mLogger.log(Level.WARNING, "Cannot save item {0} : it is static", item.getId());
 			return;
 		}
@@ -1831,7 +1831,7 @@ public class PersistenceNew2009 implements ReadItemType {
 			int version = input.readInt();
 
 			ItemDelta destItem = copy.loadItem(destId, destType);
-			if (!destItem.isStatic()) {
+			if (!destItem.isRuntime()) {
 				destItem.setQualifiedName(destQualifiedName, true);
 				destItem.setName(destName, true);
 			}
@@ -2771,7 +2771,7 @@ public class PersistenceNew2009 implements ReadItemType {
 			LoadState loadState = new LoadStateImpl(this, model, mLogger);
 			List<Item> items = new ArrayList<Item>(model.getItems());
 			for (Item i : items) {
-				if (i.isStatic()) {
+				if (i.isRuntime()) {
 					continue;
 				}
 				if (i instanceof ContentItem)
@@ -2805,7 +2805,7 @@ public class PersistenceNew2009 implements ReadItemType {
 
 	@Override
 	public void writeHeaderIfNead(Item item) throws FileNotFoundException, IOException {
-		if (item.isStatic() || !item.isResolved()) {
+		if (item.isRuntime() || !item.isResolved()) {
 			write(itemToByteArrayHeader(item), fileInWorkspaceV2(item), true);
 		}
 	}
