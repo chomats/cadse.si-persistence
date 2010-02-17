@@ -804,7 +804,7 @@ public class Persistence implements IPersistence {
 	 *             the no such algorithm exception
 	 */
 	void saveInternal(final Item item) throws IOException, FileNotFoundException, NoSuchAlgorithmException {
-		if (item.isStatic()) {
+		if (item.isRuntime()) {
 			mLogger.log(Level.WARNING, "Cannot save item {0} : it is static", item.getId());
 			return;
 		}
@@ -2178,7 +2178,7 @@ public class Persistence implements IPersistence {
 			}
 			
 			ItemDelta destItem = copy.loadItem(destId, destTypeName);
-			if (!destItem.isStatic()) {
+			if (!destItem.isRuntime()) {
 				destItem.setQualifiedName(destQualifiedName, true);
 				destItem.setName(destName, true);
 			}
@@ -2620,7 +2620,7 @@ public class Persistence implements IPersistence {
 			saveModelNameIfNeed();
 			List<Item> items = new ArrayList<Item>(model.getItems());
 			for (Item i : items) {
-				if (i.isStatic()) {
+				if (i.isRuntime()) {
 					continue;
 				}
 				if (i instanceof ContentItem)

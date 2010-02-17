@@ -108,7 +108,7 @@ public class WSPersitanceService extends Thread {
 				switch (wse.getEventTypeId()) {
 					case SET_ATTRIBUTE:
 						item = (Item) wse.getOperationArgs()[0];
-						if (item.isStatic()) continue;
+						if (item.isRuntime()) continue;
 						final IAttributeType<?> attDef = (IAttributeType<?>) wse.getOperationArgs()[1];
 						if (attDef.isTransient()) continue;
 						toPersistItems.add(item);
@@ -116,23 +116,23 @@ public class WSPersitanceService extends Thread {
 					case DELETE_OUTGOING_LINK:
 					case CREATE_OUTGOING_LINK:
 						item = ((Link) wse.getOperationArgs()[0]).getSource();
-						if (item.isStatic()) continue;
+						if (item.isRuntime()) continue;
 						toPersistItems.add(item);
 						break;
 					case CREATE_ITEM:
 						item = (Item) wse.getOperationArgs()[0];
-						if (item.isStatic()) continue;
+						if (item.isRuntime()) continue;
 						toPersistItems.add(item);
 						break;
 
 					case DELETE_ITEM:
 						item = (Item) wse.getOperationArgs()[0];
-						if (item.isStatic()) continue;
+						if (item.isRuntime()) continue;
 						toPersistItems.add(item);
 						break;
 					case FORCE_SAVE:
 						item = (Item) wse.getOperationArgs()[0];
-						if (item.isStatic()) continue;
+						if (item.isRuntime()) continue;
 						toPersistItems.add(item);
 						break;
 					default:
