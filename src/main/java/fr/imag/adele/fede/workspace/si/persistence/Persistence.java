@@ -2131,6 +2131,7 @@ public class Persistence implements IPersistence {
 				else if (value instanceof fr.imag.adele.cadseg.model.type.PositionEnum) {
 					value = EPosLabel.valueOf(value.toString());
 				}
+				if (att.isTransient()) continue;
 				desc.loadAttribute(att, value);
 			} catch (ClassNotFoundException e) {
 				mLogger.log(Level.SEVERE, "Can't read the value for " + key, e);
@@ -2176,6 +2177,7 @@ public class Persistence implements IPersistence {
 				mLogger.log(Level.WARNING, "Can't find attribute " + it.getId()+linkType);
 				continue;
 			}
+			if (att.isTransient()) continue;
 			
 			ItemDelta destItem = copy.loadItem(destId, destTypeName);
 			if (!destItem.isRuntime()) {
