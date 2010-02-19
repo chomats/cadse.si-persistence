@@ -2071,8 +2071,8 @@ public class Persistence implements IPersistence {
 			mLogger.log(Level.WARNING, "Can't find type " + type);
 			return null;
 		}
-		String longname = readString(input);
-		String shortname = readString(input);
+		String qname = readString(input);
+		String name = readString(input);
 
 		// special value
 		boolean readOnly = input.readBoolean();
@@ -2084,8 +2084,8 @@ public class Persistence implements IPersistence {
 		desc.setLoaded(true);
 		desc.setValid(isValid, true);
 		desc.setReadOnly(readOnly, true);
-		desc.setQualifiedName(longname, true);
-		desc.setName(shortname, true);
+		desc.setQualifiedName(qname, true);
+		desc.setName(name, true);
 
 		// attributs
 		while (true) {
@@ -2180,7 +2180,7 @@ public class Persistence implements IPersistence {
 			if (att.isTransient()) continue;
 			
 			ItemDelta destItem = copy.loadItem(destId, destTypeName);
-			if (!destItem.isRuntime()) {
+			if (!destItem.isRuntime() && !destItem.isLoaded()) {
 				destItem.setQualifiedName(destQualifiedName, true);
 				destItem.setName(destName, true);
 			}
