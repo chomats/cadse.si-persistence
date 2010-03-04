@@ -2067,7 +2067,7 @@ public class Persistence implements IPersistence {
 		UUID type = readUUID(input);
 		ItemType it = mig.findTypeFrom(type);
 		if (it == null) {
-			if (CadseCore.getRemovedElements().contains(type.toString())) return null;
+			if (CadseCore.ignoreType(type)) return null;
 			mLogger.log(Level.WARNING, "Can't find type " + type);
 			return null;
 		}
@@ -2105,7 +2105,7 @@ public class Persistence implements IPersistence {
 			try {
 				Object value = input.readObject();
 				if (att == null) {
-					if (CadseCore.getRemovedElements().contains(it.getId()+key)) continue;
+					if (CadseCore.ignoreAttribute(it, key)) continue;
 					mLogger.log(Level.WARNING,"Cannot found attribute "+it.getId()+key+" in "+it.getName());
 					continue;
 				}
@@ -2165,15 +2165,14 @@ public class Persistence implements IPersistence {
 			
 			ItemType destType = mig.findTypeFrom(destTypeName);
 			if (destType == null) {
-				if (CadseCore.getRemovedElements().contains(destTypeName.toString())) continue;
+				if (CadseCore.ignoreType(destTypeName)) continue;
 				mLogger.log(Level.WARNING, "Can't find dest type " + destTypeName);
 				continue;
 			}
 			
 			LinkType att = mig.findlinkTypeFrom(it, linkType);
 			if (att == null) {
-				if (CadseCore.getRemovedElements().contains(it.getId()+linkType) ||
-						CadseCore.getRemovedElements().contains(linkType)) continue;
+				if (CadseCore.ignoreAttribute(it, linkType)) continue;
 				mLogger.log(Level.WARNING, "Can't find attribute " + it.getId()+linkType);
 				continue;
 			}
