@@ -154,7 +154,7 @@ public class MigrationFormat implements IMigrationFormat {
 		}
 		IAttributeType<?> attributeType = it.getAttributeType(attName);
 		if (attributeType == null)
-			attributeType = CadseCore.getOldNameMap().get(attName);
+			attributeType = CadseCore.findAttributeFrom(it, attName);
 		return attributeType;
 	}
 
