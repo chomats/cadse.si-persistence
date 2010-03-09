@@ -1606,6 +1606,7 @@ public class Persistence implements IPersistence {
 			if (link.isDerived()) { // Filter derivedLink
 				continue;
 			}
+			if (link.getDestinationId() == null || link.getLinkType() == null) continue;
 			/*
 			 * link type dest id dest long name dest short name dest type info
 			 */
