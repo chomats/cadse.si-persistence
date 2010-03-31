@@ -87,8 +87,7 @@ public class WSPersitanceService extends Thread {
 				} else {
 					if (item.isRuntime() && item.getType() == CadseGCST.CADSE) {
 						p.saveModelNameIfNeed();
-						continue;
-						
+						continue;						
 					}
 					try {
 						p.save(item);
