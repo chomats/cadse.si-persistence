@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import fr.imag.adele.cadse.core.CadseGCST;
 import fr.imag.adele.cadse.core.ChangeID;
 import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemState;
@@ -84,6 +85,11 @@ public class WSPersitanceService extends Thread {
 				if (item.getState() == ItemState.DELETED) {
 					p.delete(item);
 				} else {
+					if (item.isRuntime() && item.getType() == CadseGCST.CADSE) {
+						p.saveModelNameIfNeed();
+						continue;
+						
+					}
 					try {
 						p.save(item);
 					} catch (Throwable e) {
@@ -108,8 +114,13 @@ public class WSPersitanceService extends Thread {
 				switch (wse.getEventTypeId()) {
 					case SET_ATTRIBUTE:
 						item = (Item) wse.getOperationArgs()[0];
-						if (item.isRuntime()) continue;
 						final IAttributeType<?> attDef = (IAttributeType<?>) wse.getOperationArgs()[1];
+						if (item.isRuntime()) {
+							if (item.getType() == CadseGCST.CADSE && attDef == CadseGCST.CADSE_at_EXECUTED_) {
+								toPersistItems.add(item);
+							}
+							continue;
+						}
 						if (attDef.isTransient()) continue;
 						toPersistItems.add(item);
 						break;
