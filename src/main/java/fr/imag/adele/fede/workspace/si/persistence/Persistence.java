@@ -47,19 +47,19 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
+//import org.eclipse.core.resources.IResource;
+//import org.eclipse.core.resources.ResourcesPlugin;
+//import org.eclipse.core.runtime.CoreException;
+//import org.eclipse.core.runtime.IPath;
+//import org.eclipse.core.runtime.IProgressMonitor;
+//import org.eclipse.core.runtime.NullProgressMonitor;
 
 import adele.util.io.FileUtil;
 import fr.imag.adele.cadse.as.platformide.IPlatformIDE;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseRuntime;
-import java.util.UUID;
+
 import fr.imag.adele.cadse.core.content.ContentItem;
 import fr.imag.adele.cadse.core.enumdef.TWCommitKind;
 import fr.imag.adele.cadse.core.enumdef.TWDestEvol;
@@ -83,6 +83,8 @@ import fr.imag.adele.cadse.core.transaction.delta.LinkDelta;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
 import fr.imag.adele.cadse.core.ui.EPosLabel;
 import fr.imag.adele.cadse.util.Assert;
+import fr.imag.adele.cadse.util.IProgressMonitor;
+import fr.imag.adele.cadse.util.NullProgressMonitor;
 import fr.imag.adele.fede.workspace.as.persistence.IPersistence;
 
 /**
@@ -934,7 +936,7 @@ public class Persistence implements IPersistence {
 	 */
 	private void init() {
 		if (cacheItem == null) {
-			File data = ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile();
+			File data = platformIDE.getLocation();
 			cacheItem = new File(data, ".ws-items");
 			cacheDirectory = new File(data, ".ws-dir");
 			cacheItem.mkdirs();
@@ -1173,17 +1175,11 @@ public class Persistence implements IPersistence {
 	 * @throws CoreException
 	 *             the core exception
 	 */
-	File fileInResource(Item item) throws CoreException {
-		IResource r = getResourceFromItem(item);
-		if (r == null) {
+	File fileInResource(Item item) throws CadseException {
+		File fileResource = getResourceFromItem(item);
+		if (fileResource == null) {
 			return null;
 		}
-		IPath path = r.getLocation();
-		if (path == null) {
-			return null;
-		}
-		File fileResource = path.toFile();
-
 		if (fileResource.equals(wsLocation)) {
 			return null;
 		}
@@ -1200,14 +1196,12 @@ public class Persistence implements IPersistence {
 
 	}
 
-	public IResource getResourceFromItem(Item item)
-			throws CoreException {
-
+	public File getResourceFromItem(Item item)  {
 		if (item == null || !item.isResolved()) {
 			return null;
 		}
 
-		return item.getMainMappingContent(IResource.class);
+		return item.getMainMappingContent(File.class);
 	}
 
 	/**
@@ -1221,16 +1215,11 @@ public class Persistence implements IPersistence {
 	 * @throws CoreException
 	 *             the core exception
 	 */
-	File fileInResourceXml(Item item) throws CoreException {
-		IResource r = getResourceFromItem(item);
-		if (r == null) {
+	File fileInResourceXml(Item item) {
+		File fileResource = getResourceFromItem(item);
+		if (fileResource == null) {
 			return null;
 		}
-		IPath path = r.getLocation();
-		if (path == null) {
-			return null;
-		}
-		File fileResource = path.toFile();
 
 		if (fileResource.equals(wsLocation)) {
 			return null;
