@@ -47,13 +47,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import org.eclipse.core.resources.IResource;
-//import org.eclipse.core.resources.ResourcesPlugin;
-//import org.eclipse.core.runtime.CoreException;
-//import org.eclipse.core.runtime.IPath;
-//import org.eclipse.core.runtime.IProgressMonitor;
-//import org.eclipse.core.runtime.NullProgressMonitor;
-
 import adele.util.io.FileUtil;
 import fr.imag.adele.cadse.as.platformide.IPlatformIDE;
 import fr.imag.adele.cadse.core.CadseDomain;
@@ -92,6 +85,8 @@ import fr.imag.adele.fede.workspace.as.persistence.IPersistence;
  */
 public class Persistence implements IPersistence {
 
+
+	
 
 	/**
 	 * @generated
@@ -1428,9 +1423,11 @@ public class Persistence implements IPersistence {
 
 		Assert.isTrue(threadSave == null, "Error in persistance, thread allready started.");
 
-		threadSave = new WSPersitanceService(this);
-		threadSave.start();
-
+		String autosaveStr = System.getProperty(LogicalWorkspace.CADSE_AUTOSAVE);
+		if (autosaveStr == null || Boolean.parseBoolean(autosaveStr)) {
+			threadSave = new WSPersitanceService(this);
+			threadSave.start();
+		}
 	}
 
 	/*
@@ -1442,7 +1439,8 @@ public class Persistence implements IPersistence {
 		this.enablePersistance = true;
 		forceSave();
 		this.enablePersistance = false;
-		threadSave.stopService();
+		if (threadSave != null)
+			threadSave.stopService();
 		threadSave = null;
 	}
 
