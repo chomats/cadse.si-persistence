@@ -30,30 +30,35 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>as.cu</artifactId>
+	    	<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>as.cu</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>cu.core</artifactId>
+	    	<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>cu.core</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-        	<groupId>${project.groupId}</groupId>
+		<groupId>fr.imag.adele.cadse</groupId>
         	<artifactId>util.io</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>        
         <dependency>
-        	<groupId>${project.groupId}</groupId>
+		<groupId>fr.imag.adele.cadse</groupId>
         	<artifactId>as.persistence</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-        	<groupId>${project.groupId}</groupId>
+		<groupId>fr.imag.adele.cadse</groupId>
         	<artifactId>compatility</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>as.platformeIDE</artifactId>
+		<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>as.platformeIDE</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
-        
     </dependencies>
 </project>
 
