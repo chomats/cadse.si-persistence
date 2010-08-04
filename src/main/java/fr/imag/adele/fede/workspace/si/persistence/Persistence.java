@@ -373,6 +373,8 @@ public class Persistence implements IPersistence {
 		try {
 			// use buffering
 		   byte[] arrayByte = MD5.read(f);
+ 			if (arrayByte.length == 0) 
+				arrayByte = MD5.read(f);
 			InputStream buffer = new ByteArrayInputStream(arrayByte);
 			input = new ObjectInputStream(buffer);
 			int version = input.readInt();
