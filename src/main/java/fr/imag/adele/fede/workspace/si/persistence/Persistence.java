@@ -372,8 +372,8 @@ public class Persistence implements IPersistence {
 		ObjectInputStream input = null;
 		try {
 			// use buffering
-			InputStream file = new FileInputStream(f);
-			InputStream buffer = new BufferedInputStream(file);
+		   byte[] arrayByte = MD5.read(f);
+			InputStream buffer = new ByteArrayInputStream(arrayByte);
 			input = new ObjectInputStream(buffer);
 			int version = input.readInt();
 			List<String> modelName = new ArrayList<String>();
