@@ -134,10 +134,8 @@ public class MigrationFormat implements IMigrationFormat {
 		try {
 			UUID uuid = UUID.fromString(attName);
 			Item foundItem = _items.get(uuid);
-			File fileItem = p.fileSerFromUUID(uuid);
-			if (foundItem == null && fileItem.exists()) {
-				foundItem = p.loadItem(getTransaction(), this, fileItem, false);
-			}
+			if (foundItem == null)
+				foundItem = loadAttributeIfNeed(uuid);
 			if (foundItem == null)
 				foundItem = it.getLogicalWorkspace().getItem(uuid);
 			if (foundItem instanceof ItemDelta) {
@@ -156,6 +154,15 @@ public class MigrationFormat implements IMigrationFormat {
 		if (attributeType == null)
 			attributeType = CadseCore.findAttributeFrom(it, attName);
 		return attributeType;
+	}
+
+	protected Item loadAttributeIfNeed(UUID uuid)
+			throws Throwable {
+		File fileItem = p.fileSerFromUUID(uuid);
+		if (fileItem.exists()) {
+			return p.loadItem(getTransaction(), this, fileItem, false);
+		}
+		return null;
 	}
 
 	@Override
@@ -191,6 +198,10 @@ public class MigrationFormat implements IMigrationFormat {
 	@Override
 	public LogicalWorkspaceTransaction getTransaction() {
 		return lwT;
+	}
+
+	public ItemDelta[] getItems() {
+		return _items.values().toArray(new ItemDelta[_items.size()]);
 	}
 
 }

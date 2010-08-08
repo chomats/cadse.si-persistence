@@ -694,12 +694,30 @@ public class Persistence implements IPersistence {
 		}
 	}
 
-	public ItemDelta loadFromPersistence(LogicalWorkspaceTransaction wl, URL url) throws CadseException {
+	public ItemDelta[] loadFromPersistence(final LogicalWorkspaceTransaction wl, final Map<UUID, URL> urls) throws CadseException {
+		MigrationFormat mig = new MigrationFormat(this, wl, wl, mLogger) {
+			
+			protected Item loadAttributeIfNeed(UUID uuid) throws Throwable {
+				if (urls.containsKey(uuid)) {
+					return loadFromPersistence(wl, this, urls.get(uuid));
+				}
+				return null;
+			};
+		};
+		for (UUID uuid : urls.keySet()) {
+			if (mig.getItem(uuid) != null) continue;
+			loadFromPersistence(wl, mig, urls.get(uuid));
+		}
+		return mig.getItems();
+	}
+
+	protected ItemDelta loadFromPersistence(LogicalWorkspaceTransaction wl,
+			IMigrationFormat mig, URL url ) throws CadseException {
+		
 		ObjectInputStream input = null;
 		try {
 			byte[] data = MD5.read(url);
-		//	byte[] md5 = MD5.getMD5(data);
-			IMigrationFormat mig = new MigrationFormat(this, wl, wl, mLogger);
+			
 			ItemDelta item = readFromByteArray(wl, mig, data);
 			return item;
 		} catch (ClassNotFoundException e) {
