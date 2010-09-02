@@ -5,8 +5,8 @@
 		<callback transition="validate" method="start"/>
 		<callback transition="invalidate" method="stop"/>
 		<provides specification="fr.imag.adele.fede.workspace.as.persistence.IPersistence"/>
-		<requires field="platformIDE" optional="false"/>
-		<requires field="workspaceCU" optional="false"/>
+		<requires field="platformIDE" optional="false" proxy="false" nullable="false"/>
+		<requires field="workspaceCU" optional="false" proxy="false" nullable="false"/>
 	</component>
 	<instance component="fr.imag.adele.fede.workspace.si.persistence.Persistence" 
 		name="fr.imag.adele.cadse.si.workspace.persistence.instance"/>
